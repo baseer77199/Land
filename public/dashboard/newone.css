@@ -1,0 +1,42 @@
+.sel2 .parsley-errors-list.filled {
+margin-top: 29px;
+    margin-bottom: 0px;
+	
+}
+
+.sel2 .parsley-errors-list:not(.filled) {
+display: none;
+}
+
+.sel2 .parsley-errors-list.filled + span.select2 {
+margin-bottom: 0px;
+}
+
+.sel2 .parsley-errors-list.filled + span.select2 span.select2-selection--single  {
+    background: #FAEDEC !important;
+    background: rgba(232,84,69,0.23) !important;
+    /*border: 1px solid #E85445;*/
+}
+.sel2 .parsley-errors-list.filled + span.select2 span.select2-selection--multiple {
+	
+
+    background: #FAEDEC !important;
+    background: rgba(232,84,69,0.23) !important;
+    /*border: 1px solid #E85445;*/
+}
+input.parsley-success,
+select.parsley-success,
+textarea.parsley-success {
+ /* color: #468847;
+  background-color: #DFF0D8;
+  border: 1px solid #D6E9C6;*/
+}
+
+input.parsley-error,
+select.parsley-error,
+textarea.parsley-error {
+ 
+  /*background: #FAEDEC !important;
+    border: 1px solid #E85445;*/
+}
+

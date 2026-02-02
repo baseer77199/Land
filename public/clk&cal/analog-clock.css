@@ -1,0 +1,46 @@
+#clock {
+    position: relative;
+    min-height: 300px;
+    background: url(../images/clockface.png) no-repeat;
+    list-style: none;
+	width:301px;
+}
+#sec, #min, #hour {
+    position: absolute;
+    height: 300px;
+	width:15px;
+    top: 0px;
+    left: 142px;
+}
+#sec {
+    background: url(../images/sechand.png) no-repeat;
+	z-index: 3;
+}
+#min {
+    background: url(../images/minhand.png) no-repeat;
+    z-index: 2;
+}
+#hour {
+    background: url(../images/hourhand.png) no-repeat;
+    z-index: 1;
+}
+
+/*---- responsive-design -----*/
+@media(max-width:1080px){
+	#clock img {
+	width:100px;
+	height:100px;
+}
+}
+
+@media(max-width:320px){
+	#clock {
+	background: url(../images/clockface2.png) no-repeat;
+	width:270px;
+}	
+	#sec, #min, #hour {
+	top:-27px ;
+    left: 119px;
+}
+}
+/*---- responsive-design ends here-----*/

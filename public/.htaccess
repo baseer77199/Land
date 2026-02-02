@@ -1,0 +1,49 @@
+<IfModule mod_rewrite.c>
+    <IfModule mod_negotiation.c>
+        Options -MultiViews -Indexes
+    </IfModule>
+
+    RewriteEngine On
+    # Handle Authorization Header
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+    # Redirect Trailing Slashes If Not A Folder...
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_URI} (.+)/$
+    RewriteRule ^ %1 [L,R=301]
+
+    # Handle Front Controller...
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^ index.php [L]
+    ErrorDocument 403 /404.html
+# START - Disable server signature #
+ServerSignature Off
+# END - Disable server signature #
+
+
+<IfModule mod_headers.c>
+
+Header set Cache-Control "no-cache, no-store, must-revalidate"
+Header set Praga "no-cache"
+Header set Expires 0
+
+
+Header unset Vary
+Header always unset Access-Control-Allow-Origin
+Header always unset Access-Control-Allow-Headers
+Header always unset Access-Control-Allow-Methods
+Header always unset Access-Control-Allow-Credentials
+Header always unset Cache-Control
+Header always unset Content-Length
+Header always unset X-Powered-By
+Header always unset X-Forwarded-Host
+Header always append X-Frame-Options SAMEORIGIN
+
+Header always unset Connection
+Header always unset Upgrade
+
+</IfModule>
+
+</IfModule>

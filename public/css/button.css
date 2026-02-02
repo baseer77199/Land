@@ -1,0 +1,807 @@
+/* ============================================
+   Modern Colorful Icon-Based Button System
+   ============================================ */
+
+:root {
+  /* Button Colors - Subtle & Professional */
+  --btn-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  
+  /* Shadows */
+  --btn-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.08);
+  --btn-shadow-hover: 0 4px 6px rgba(0, 0, 0, 0.12), 0 2px 4px rgba(0, 0, 0, 0.08);
+  --btn-shadow-active: 0 1px 2px rgba(0, 0, 0, 0.16);
+  
+  /* Transitions */
+  --btn-transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ============================================
+   Base Button Styles
+   ============================================ */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1. 25rem;
+  font-family: var(--btn-font);
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.5;
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: pointer;
+  user-select: none;
+  border: 1px solid transparent;
+  border-radius: 0.5rem;
+  background: #2A7B9B;
+  color: #ffffff;
+  box-shadow: var(--btn-shadow);
+  transition: var(--btn-transition);
+  position: relative;
+  overflow: hidden;
+  min-height: 38px;
+  /* margin: 0. 25rem; */
+  margin: 15px 5px;
+}
+
+.btn::before {
+  content: "";
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  flex-shrink: 0;
+  filter: brightness(0) invert(1);
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--btn-shadow-hover);
+}
+
+.btn:active {
+  transform: translateY(0);
+  box-shadow: var(--btn-shadow-active);
+}
+
+.btn:focus {
+  outline: none;
+  box-shadow: var(--btn-shadow-hover), 0 0 0 3px rgba(37, 99, 235, 0.2);
+}
+
+.btn:disabled,
+.btn. disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none ! important;
+  pointer-events: none;
+}
+
+.btn:focus-visible {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+}
+
+/* ============================================
+   SAVE BUTTONS - Emerald to Teal Gradient
+   ============================================ */
+
+.btn.save,
+.btn.submit,
+.btn.save1 {
+  background: linear-gradient(135deg, #34d399 0%, #14b8a6 50%, #0d9488 100%);
+  border-color: #14b8a6;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(20, 184, 166, 0.3);
+}
+
+.btn.save:hover,
+.btn.submit:hover,
+.btn.save1:hover {
+  background: linear-gradient(135deg, #10b981 0%, #0d9488 50%, #0f766e 100%);
+  border-color: #0d9488;
+  box-shadow: 0 4px 12px rgba(20, 184, 166, 0.4);
+}
+
+.btn.save::before,
+.btn.submit::before,
+.btn.save1::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2. 5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z'/%3E%3Cpolyline points='17 21 17 13 7 13 7 21'/%3E%3Cpolyline points='7 3 7 8 15 8'/%3E%3C/svg%3E");
+}
+
+/* ============================================
+   CREATE BUTTONS - Blue to Indigo Gradient
+   ============================================ */
+
+.btn.create {
+  background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 50%, #2563eb 100%);
+  border-color: #3b82f6;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+}
+
+.btn.create:hover {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 50%, #1d4ed8 100%);
+  border-color: #2563eb;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+}
+
+.btn.create::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z'/%3E%3Cpolyline points='14 2 14 8 20 8'/%3E%3Cline x1='12' y1='18' x2='12' y2='12'/%3E%3Cline x1='9' y1='15' x2='15' y2='15'/%3E%3C/svg%3E");
+}
+
+/* ============================================
+   GENERATE BUTTONS - Violet to Purple Gradient
+   ============================================ */
+
+.btn.generate,
+.btn.create_grn {
+  background: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 50%, #7c3aed 100%);
+  border-color: #8b5cf6;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);
+}
+
+. btn.generate:hover,
+. btn.create_grn:hover {
+  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 50%, #6d28d9 100%);
+  border-color: #7c3aed;
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0. 4);
+}
+
+.btn. generate::before,
+.btn. create_grn::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='23 6 13.5 15.5 8.5 10.5 1 18'/%3E%3Cpolyline points='17 6 23 6 23 12'/%3E%3C/svg%3E");
+}
+
+/* ============================================
+   SUCCESS ACTIONS - Green Gradient
+   ============================================ */
+
+.btn.ok,
+.btn.qtyok,
+.btn.approve,
+.btn.approval,
+.btn.confirm {
+  background: linear-gradient(135deg, #4ade80 0%, #22c55e 50%, #16a34a 100%);
+  border-color: #22c55e;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.3);
+}
+
+.btn.ok:hover,
+.btn.qtyok:hover,
+.btn.approve:hover,
+.btn.approval:hover,
+.btn.confirm:hover {
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 50%, #15803d 100%);
+  border-color: #16a34a;
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.4);
+}
+
+.btn.ok::before,
+.btn.qtyok::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E");
+}
+
+.btn.approve::before,
+.btn.approval::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z'/%3E%3Cpolyline points='9 12 11 14 15 10'/%3E%3C/svg%3E");
+}
+
+.btn.confirm::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M22 11.08V12a10 10 0 1 1-5.93-9.14'/%3E%3Cpolyline points='22 4 12 14.01 9 11.01'/%3E%3C/svg%3E");
+}
+
+/* ============================================
+   POST ACTIONS - Sky Blue Gradient
+   ============================================ */
+
+.btn.post,
+.btn.ledgerposting {
+  background: linear-gradient(135deg, #38bdf8 0%, #0ea5e9 50%, #0284c7 100%);
+  border-color: #0ea5e9;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(14, 165, 233, 0.3);
+}
+
+. btn.post:hover,
+. btn.ledgerposting:hover {
+  background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 50%, #0369a1 100%);
+  border-color: #0284c7;
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.4);
+}
+
+.btn.post::before,
+.btn.ledgerposting::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2. 5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='22' y1='2' x2='11' y2='13'/%3E%3Cpolygon points='22 2 15 22 11 13 2 9 22 2'/%3E%3C/svg%3E");
+}
+
+/* ============================================
+   DANGER ACTIONS - Red to Rose Gradient
+   ============================================ */
+
+.btn.cancel,
+.btn.del,
+.btn.Delete,
+.btn.reject,
+.btn.close1 {
+  background: linear-gradient(135deg, #fb7185 0%, #f43f5e 50%, #e11d48 100%);
+  border-color: #f43f5e;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(244, 63, 94, 0.3);
+}
+
+. btn.cancel:hover,
+. btn.del:hover,
+. btn.Delete:hover,
+. btn.reject:hover,
+. btn.close1:hover {
+  background: linear-gradient(135deg, #f43f5e 0%, #e11d48 50%, #be123c 100%);
+  border-color: #e11d48;
+  box-shadow: 0 4px 12px rgba(244, 63, 94, 0.4);
+}
+
+.btn.cancel::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cline x1='15' y1='9' x2='9' y2='15'/%3E%3Cline x1='9' y1='9' x2='15' y2='15'/%3E%3C/svg%3E");
+}
+
+.btn.del::before,
+.btn.Delete::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='3 6 5 6 21 6'/%3E%3Cpath d='M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2'/%3E%3Cline x1='10' y1='11' x2='10' y2='17'/%3E%3Cline x1='14' y1='11' x2='14' y2='17'/%3E%3C/svg%3E");
+}
+
+.btn. reject::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2. 31 0 0 1-2.33 2H17'/%3E%3C/svg%3E");
+}
+
+. btn.close1::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='18' y1='6' x2='6' y2='18'/%3E%3Cline x1='6' y1='6' x2='18' y2='18'/%3E%3C/svg%3E");
+}
+
+/* ============================================
+   INFO ACTIONS - Cyan to Sky Gradient
+   ============================================ */
+
+.btn.search,
+.btn.vie,
+.btn.View,
+.btn.info,
+.btn.details,
+.btn.flt,
+.btn.more {
+  background: linear-gradient(135deg, #67e8f9 0%, #22d3ee 50%, #06b6d4 100%);
+  border-color: #22d3ee;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(34, 211, 238, 0.3);
+}
+
+. btn.search:hover,
+. btn.vie:hover,
+. btn.View:hover,
+. btn.info:hover,
+. btn.details:hover,
+. btn.flt:hover,
+.btn.more:hover {
+  background: linear-gradient(135deg, #22d3ee 0%, #06b6d4 50%, #0891b2 100%);
+  border-color: #06b6d4;
+  box-shadow: 0 4px 12px rgba(34, 211, 238, 0. 4);
+}
+
+.btn. search::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16. 65' y2='16.65'/%3E%3C/svg%3E");
+}
+
+.btn.vie::before,
+.btn.View::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3C/svg%3E");
+}
+
+.btn. info::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cline x1='12' y1='16' x2='12' y2='12'/%3E%3Cline x1='12' y1='8' x2='12. 01' y2='8'/%3E%3C/svg%3E");
+}
+
+.btn.details::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z'/%3E%3Cpolyline points='14 2 14 8 20 8'/%3E%3Cline x1='16' y1='13' x2='8' y2='13'/%3E%3Cline x1='16' y1='17' x2='8' y2='17'/%3E%3C/svg%3E");
+}
+
+. btn.flt::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolygon points='22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3'/%3E%3C/svg%3E");
+}
+
+.btn.more::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='1'/%3E%3Ccircle cx='19' cy='12' r='1'/%3E%3Ccircle cx='5' cy='12' r='1'/%3E%3C/svg%3E");
+}
+
+/* ============================================
+   EDIT/WARNING ACTIONS - Amber to Orange Gradient
+   ============================================ */
+
+.btn.edit,
+.btn.Edit,
+.btn.sec,
+.btn.draft,
+.btn.waiting,
+.btn.change {
+  background: linear-gradient(135deg, #fcd34d 0%, #fbbf24 50%, #f59e0b 100%);
+  border-color: #fbbf24;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(251, 191, 36, 0.3);
+}
+
+.btn.edit:hover,
+.btn.Edit:hover,
+.btn.sec:hover,
+.btn.draft:hover,
+.btn.waiting:hover,
+.btn.change:hover {
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%);
+  border-color: #f59e0b;
+  box-shadow: 0 4px 12px rgba(251, 191, 36, 0.4);
+}
+
+.btn.edit::before,
+.btn.Edit::before,
+.btn.sec::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7'/%3E%3Cpath d='M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9. 5-9.5z'/%3E%3C/svg%3E");
+}
+
+.btn.draft::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 19l7-7 3 3-7 7-3-3z'/%3E%3Cpath d='M18 13l-1. 5-7.5L2 2l3.5 14.5L13 18l5-5z'/%3E%3Cpath d='M2 2l7.586 7.586'/%3E%3Ccircle cx='11' cy='11' r='2'/%3E%3C/svg%3E");
+}
+
+.btn.waiting::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cpolyline points='12 6 12 12 16 14'/%3E%3C/svg%3E");
+}
+
+.btn.change::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='23 4 23 10 17 10'/%3E%3Cpolyline points='1 20 1 14 7 14'/%3E%3Cpath d='M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15'/%3E%3C/svg%3E");
+}
+
+/* ============================================
+   ADD ACTIONS - Purple to Fuchsia Gradient
+   ============================================ */
+
+.btn.add,
+.btn.addpayamt {
+  background: linear-gradient(135deg, #c084fc 0%, #a855f7 50%, #9333ea 100%);
+  border-color: #a855f7;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(168, 85, 247, 0.3);
+}
+
+.btn.add:hover,
+.btn.addpayamt:hover {
+  background: linear-gradient(135deg, #a855f7 0%, #9333ea 50%, #7e22ce 100%);
+  border-color: #9333ea;
+  box-shadow: 0 4px 12px rgba(168, 85, 247, 0.4);
+}
+
+.btn.add::before,
+.btn.addpayamt::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cline x1='12' y1='8' x2='12' y2='16'/%3E%3Cline x1='8' y1='12' x2='16' y2='12'/%3E%3C/svg%3E");
+}
+
+/* ============================================
+   CREATE LABOUR - Violet Gradient
+   ============================================ */
+
+.btn.createlabour,
+.btn. employee {
+  background: linear-gradient(135deg, #818cf8 0%, #6366f1 50%, #4f46e5 100%);
+  border-color: #6366f1;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+}
+
+. btn.createlabour:hover,
+.btn.employee:hover {
+  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 50%, #4338ca 100%);
+  border-color: #4f46e5;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+}
+
+.btn.createlabour::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2'/%3E%3Ccircle cx='8. 5' cy='7' r='4'/%3E%3Cline x1='20' y1='8' x2='20' y2='14'/%3E%3Cline x1='23' y1='11' x2='17' y2='11'/%3E%3C/svg%3E");
+}
+
+. btn.employee::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www. w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2'/%3E%3Ccircle cx='12' cy='7' r='4'/%3E%3C/svg%3E");
+}
+
+/* ============================================
+   PRINT ACTIONS - Indigo to Blue Gradient
+   ============================================ */
+
+.btn.pri,
+.btn.print {
+  background: linear-gradient(135deg, #818cf8 0%, #6366f1 50%, #4f46e5 100%);
+  border-color: #6366f1;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+}
+
+.btn.pri:hover,
+.btn.print:hover {
+  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 50%, #4338ca 100%);
+  border-color: #4f46e5;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+}
+
+.btn.pri::before,
+.btn.print::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 6 2 18 2 18 9'/%3E%3Cpath d='M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2'/%3E%3Crect x='6' y='14' width='12' height='8'/%3E%3C/svg%3E");
+}
+
+/* ============================================
+   UPLOAD - Teal Gradient
+   ============================================ */
+
+.btn.upload {
+  background: linear-gradient(135deg, #5eead4 0%, #2dd4bf 50%, #14b8a6 100%);
+  border-color: #2dd4bf;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(45, 212, 191, 0.3);
+}
+
+. btn.upload:hover {
+  background: linear-gradient(135deg, #2dd4bf 0%, #14b8a6 50%, #0d9488 100%);
+  border-color: #14b8a6;
+  box-shadow: 0 4px 12px rgba(45, 212, 191, 0. 4);
+}
+
+.btn. upload::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4'/%3E%3Cpolyline points='17 8 12 3 7 8'/%3E%3Cline x1='12' y1='3' x2='12' y2='15'/%3E%3C/svg%3E");
+}
+
+/* ============================================
+   DOWNLOAD - Emerald Gradient
+   ============================================ */
+
+.btn.download {
+  background: linear-gradient(135deg, #6ee7b7 0%, #34d399 50%, #10b981 100%);
+  border-color: #34d399;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(52, 211, 153, 0.3);
+}
+
+. btn.download:hover {
+  background: linear-gradient(135deg, #34d399 0%, #10b981 50%, #059669 100%);
+  border-color: #10b981;
+  box-shadow: 0 4px 12px rgba(52, 211, 153, 0.4);
+}
+
+.btn.download::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4'/%3E%3Cpolyline points='7 10 12 15 17 10'/%3E%3Cline x1='12' y1='15' x2='12' y2='3'/%3E%3C/svg%3E");
+}
+
+/* ============================================
+   EXPORT - Lime to Green Gradient
+   ============================================ */
+
+.btn.export,
+.btn.exportexcel,
+.btn.exportpdf {
+  background: linear-gradient(135deg, #86efac 0%, #4ade80 50%, #22c55e 100%);
+  border-color: #4ade80;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(74, 222, 128, 0.3);
+}
+
+. btn.export:hover,
+. btn.exportexcel:hover,
+.btn.exportpdf:hover {
+  background: linear-gradient(135deg, #4ade80 0%, #22c55e 50%, #16a34a 100%);
+  border-color: #22c55e;
+  box-shadow: 0 4px 12px rgba(74, 222, 128, 0.4);
+}
+
+.btn.export::before,
+.btn.exportexcel::before,
+.btn.exportpdf::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4'/%3E%3Cpolyline points='17 8 12 3 7 8'/%3E%3Cline x1='12' y1='3' x2='12' y2='15'/%3E%3C/svg%3E");
+}
+
+/* ============================================
+   RESET/CLEAR - Slate Gradient
+   ============================================ */
+
+.btn.reset,
+. btn.clearsearch {
+  background: linear-gradient(135deg, #94a3b8 0%, #64748b 50%, #475569 100%);
+  border-color: #64748b;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(100, 116, 139, 0.3);
+}
+
+.btn.reset:hover,
+.btn.clearsearch:hover {
+  background: linear-gradient(135deg, #64748b 0%, #475569 50%, #334155 100%);
+  border-color: #475569;
+  box-shadow: 0 4px 12px rgba(100, 116, 139, 0.4);
+}
+
+.btn.reset::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='1 4 1 10 7 10'/%3E%3Cpolyline points='23 20 23 14 17 14'/%3E%3Cpath d='M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15'/%3E%3C/svg%3E");
+}
+
+. btn.clearsearch::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='18' y1='6' x2='6' y2='18'/%3E%3Cline x1='6' y1='6' x2='18' y2='18'/%3E%3C/svg%3E");
+}
+
+/* ============================================
+   LOAD/VALIDATE/CHECK - Purple Gradient
+   ============================================ */
+
+.btn.load,
+.btn.loadd,
+.btn.validate,
+.btn.check,
+.btn.applychanges {
+  background: linear-gradient(135deg, #c084fc 0%, #a855f7 50%, #9333ea 100%);
+  border-color: #a855f7;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(168, 85, 247, 0.3);
+}
+
+.btn.load:hover,
+.btn.loadd:hover,
+.btn.validate:hover,
+.btn.check:hover,
+.btn.applychanges:hover {
+  background: linear-gradient(135deg, #a855f7 0%, #9333ea 50%, #7e22ce 100%);
+  border-color: #9333ea;
+  box-shadow: 0 4px 12px rgba(168, 85, 247, 0.4);
+}
+
+.btn.load::before,
+.btn.loadd::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='16 16 12 12 8 16'/%3E%3Cline x1='12' y1='12' x2='12' y2='21'/%3E%3Cpath d='M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3'/%3E%3Cpolyline points='16 16 12 12 8 16'/%3E%3C/svg%3E");
+}
+
+.btn.validate::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z'/%3E%3Cpolyline points='9 12 11 14 15 10'/%3E%3C/svg%3E");
+}
+
+.btn.check::before,
+.btn.applychanges::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E");
+}
+
+/* ============================================
+   WORKFLOW - Orange to Red Gradient
+   ============================================ */
+
+.btn.convert,
+.btn.invoice,
+.btn.convertinvoice,
+.btn.convertorder,
+.btn.convert1,
+.btn.convert2 {
+  background: linear-gradient(135deg, #fdba74 0%, #fb923c 50%, #f97316 100%);
+  border-color: #fb923c;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(251, 146, 60, 0.3);
+}
+
+.btn.convert:hover,
+.btn.invoice:hover,
+.btn.convertinvoice:hover,
+. btn.convertorder:hover,
+.btn.convert1:hover,
+.btn.convert2:hover {
+  background: linear-gradient(135deg, #fb923c 0%, #f97316 50%, #ea580c 100%);
+  border-color: #f97316;
+  box-shadow: 0 4px 12px rgba(251, 146, 60, 0.4);
+}
+
+.btn.convert::before,
+.btn.invoice::before,
+.btn.convertinvoice::before,
+. btn.convertorder::before,
+.btn.convert1::before,
+.btn.convert2::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='17 1 21 5 17 9'/%3E%3Cpath d='M3 11V9a4 4 0 0 1 4-4h14'/%3E%3Cpolyline points='7 23 3 19 7 15'/%3E%3Cpath d='M21 13v2a4 4 0 0 1-4 4H3'/%3E%3C/svg%3E");
+}
+
+/* ============================================
+   REVERSE - Pink Gradient
+   ============================================ */
+
+.btn.reverse {
+  background: linear-gradient(135deg, #f9a8d4 0%, #f472b6 50%, #ec4899 100%);
+  border-color: #f472b6;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(244, 114, 182, 0.3);
+}
+
+. btn.reverse:hover {
+  background: linear-gradient(135deg, #f472b6 0%, #ec4899 50%, #db2777 100%);
+  border-color: #ec4899;
+  box-shadow: 0 4px 12px rgba(244, 114, 182, 0.4);
+}
+
+.btn.reverse::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='1 4 1 10 7 10'/%3E%3Cpath d='M3. 51 15a9 9 0 1 0 2.13-9.36L1 10'/%3E%3C/svg%3E");
+}
+
+/* ============================================
+   DISPATCH/PACKING - Sky Blue Gradient
+   ============================================ */
+
+.btn.dispatch,
+.btn.packingslip {
+  background: linear-gradient(135deg, #7dd3fc 0%, #38bdf8 50%, #0ea5e9 100%);
+  border-color: #38bdf8;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(56, 189, 248, 0.3);
+}
+
+.btn.dispatch:hover,
+.btn.packingslip:hover {
+  background: linear-gradient(135deg, #38bdf8 0%, #0ea5e9 50%, #0284c7 100%);
+  border-color: #0ea5e9;
+  box-shadow: 0 4px 12px rgba(56, 189, 248, 0.4);
+}
+
+.btn.dispatch::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='1' y='3' width='15' height='13'/%3E%3Cpolygon points='16 8 20 8 23 11 23 16 16 16 16 8'/%3E%3Ccircle cx='5. 5' cy='18.5' r='2.5'/%3E%3Ccircle cx='18.5' cy='18.5' r='2.5'/%3E%3C/svg%3E");
+}
+
+.btn.packingslip::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z'/%3E%3Cpolyline points='3.27 6.96 12 12. 01 20.73 6. 96'/%3E%3Cline x1='12' y1='22.08' x2='12' y2='12'/%3E%3C/svg%3E");
+}
+
+/* ============================================
+   INVENTORY - Various Gradients
+   ============================================ */
+
+.btn.receive {
+  background: linear-gradient(135deg, #a5f3fc 0%, #67e8f9 50%, #22d3ee 100%);
+  border-color: #67e8f9;
+  color: #0f172a;
+  box-shadow: 0 2px 8px rgba(103, 232, 249, 0.3);
+}
+
+.btn.receive:hover {
+  background: linear-gradient(135deg, #67e8f9 0%, #22d3ee 50%, #06b6d4 100%);
+  border-color: #22d3ee;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(103, 232, 249, 0.4);
+}
+
+.btn.receive::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230f172a' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4'/%3E%3Cpolyline points='7 10 12 15 17 10'/%3E%3Cline x1='12' y1='15' x2='12' y2='3'/%3E%3C/svg%3E");
+  filter: none;
+}
+
+.btn.receive:hover::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4'/%3E%3Cpolyline points='7 10 12 15 17 10'/%3E%3Cline x1='12' y1='15' x2='12' y2='3'/%3E%3C/svg%3E");
+  filter: brightness(0) invert(1);
+}
+
+. btn.return {
+  background: linear-gradient(135deg, #fef08a 0%, #fde047 50%, #facc15 100%);
+  border-color: #fde047;
+  color: #713f12;
+  box-shadow: 0 2px 8px rgba(253, 224, 71, 0.3);
+}
+
+.btn.return:hover {
+  background: linear-gradient(135deg, #fde047 0%, #facc15 50%, #eab308 100%);
+  border-color: #facc15;
+  color: #713f12;
+  box-shadow: 0 4px 12px rgba(253, 224, 71, 0.4);
+}
+
+.btn.return::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23713f12' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='9 14 4 9 9 4'/%3E%3Cpath d='M20 20v-7a4 4 0 0 0-4-4H4'/%3E%3C/svg%3E");
+  filter: none;
+}
+
+.btn.move {
+  background: linear-gradient(135deg, #d8b4fe 0%, #c084fc 50%, #a855f7 100%);
+  border-color: #c084fc;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(192, 132, 252, 0.3);
+}
+
+. btn.move:hover {
+  background: linear-gradient(135deg, #c084fc 0%, #a855f7 50%, #9333ea 100%);
+  border-color: #a855f7;
+  box-shadow: 0 4px 12px rgba(192, 132, 252, 0.4);
+}
+
+.btn.move::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2. 5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='5 9 2 12 5 15'/%3E%3Cpolyline points='9 5 12 2 15 5'/%3E%3Cpolyline points='15 19 12 22 9 19'/%3E%3Cpolyline points='19 9 22 12 19 15'/%3E%3Cline x1='2' y1='12' x2='22' y2='12'/%3E%3Cline x1='12' y1='2' x2='12' y2='22'/%3E%3C/svg%3E");
+}
+
+.btn.rework {
+  background: linear-gradient(135deg, #fdba74 0%, #fb923c 50%, #f97316 100%);
+  border-color: #fb923c;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(251, 146, 60, 0.3);
+}
+
+.btn.rework:hover {
+  background: linear-gradient(135deg, #fb923c 0%, #f97316 50%, #ea580c 100%);
+  border-color: #f97316;
+  box-shadow: 0 4px 12px rgba(251, 146, 60, 0.4);
+}
+
+.btn.rework::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14. 7 6. 3a1 1 0 0 0 0 1.4l1. 6 1.6a1 1 0 0 0 1.4 0l3. 77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2. 12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z'/%3E%3C/svg%3E");
+}
+
+/* ============================================
+   DOCUMENT ACTIONS
+   ============================================ */
+
+. btn.attach,
+.btn.attach_view {
+  background: linear-gradient(135deg, #94a3b8 0%, #64748b 50%, #475569 100%);
+  border-color: #64748b;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(100, 116, 139, 0.3);
+}
+
+.btn.attach:hover,
+.btn.attach_view:hover {
+  background: linear-gradient(135deg, #64748b 0%, #475569 50%, #334155 100%);
+  border-color: #475569;
+  box-shadow: 0 4px 12px rgba(100, 116, 139, 0.4);
+}
+
+.btn.attach::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21. 44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48'/%3E%3C/svg%3E");
+}
+
+.btn.attach_view::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z'/%3E%3Cpolyline points='14 2 14 8 20 8'/%3E%3Cline x1='16' y1='13' x2='8' y2='13'/%3E%3Cline x1='16' y1='17' x2='8' y2='17'/%3E%3C/svg%3E");
+}
+
+.btn. quote_compare {
+  background: linear-gradient(135deg, #99f6e4 0%, #5eead4 50%, #2dd4bf 100%);
+  border-color: #5eead4;
+  color: #0f172a;
+  box-shadow: 0 2px 8px rgba(94, 234, 212, 0.3);
+}
+
+.btn.quote_compare:hover {
+  background: linear-gradient(135deg, #5eead4 0%, #2dd4bf 50%, #14b8a6 100%);
+  border-color: #2dd4bf;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(94, 234, 212, 0.4);
+}
+
+.btn.quote_compare::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230f172a' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='18' y1='20' x2='18' y2='10'/%3E%3Cline x1='12' y1='20' x2='12' y2='4'/%3E%3Cline x1='6' y1='20' x2='6' y2='14'/%3E%3C/svg%3E");
+  filter: none;
+}
+
+.btn.quote_compare:hover::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www. w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='18' y1='20' x2='18' y2='10'/%3E%3Cline x1='12' y1='20' x2='12' y2='4'/%3E%3Cline x1='6' y1='20' x2='6' y2='14'/%3E%3C/svg%3E");
+  filter: brightness(0) invert(1);
+}
+
+.btn. amendment {
+  background: linear-gradient(135deg, #fbcfe8 0%, #f9a8d4 50%, #f472b6 100%);
+  border-color: #f9a8d4;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(249, 168, 212, 0.3);
+}
+
+.btn.amendment:hover {
+  background: linear-gradient(135deg, #f9a8d4 0%, #f472b6 50%, #ec4899 100%);
+  border-color: #f472b6;
+  box-shadow: 0 4px 12px rgba(249, 168, 212, 0.4);
+}
+
+.btn.amendment::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http

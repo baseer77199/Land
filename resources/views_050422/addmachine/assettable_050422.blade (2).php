@@ -1,0 +1,747 @@
+@extends('layouts.header')
+@section('content')
+
+<style type="text/css">
+/*styles for line table to differnt media devices*/
+
+@media  only screen and (min-width: 1500px) {
+.bulk_frequency_id {width: 300px !important;}
+.bulk_frequency_date {width: 300px !important;}
+
+ }
+
+.bulk_frequency_id {width: 300px;}
+.bulk_frequency_date {width: 300px;}
+
+.stickytable-wrap td, .stickytable-wrap th {
+    text-align: center;
+    padding: 2px 12px;
+    box-sizing: border-box;
+}
+.readonly{
+    pointer-events: none;
+}
+</style>
+<div class="ajaxLoading"></div>
+<span class="ui_close_btn"></span><h3 class="heads"><a role="button">Add Machine</a> <span class="ui_close_btn"><a href="{{ URL::to('addmachine') }}" class="collapse-close pull-right btn-danger" onclick="addmachine"></a></span></h3>
+
+
+
+
+<div class="card">
+
+    <?php error_reporting(0); ?>
+        <div class="card-body card-block">
+        
+        <form method="post" action="" id="machineform" data-parsley-validate>
+        <input type="hidden" value="" name="savestatus" id="savestatus" /> {{ csrf_field()}}
+
+     
+    
+    <div class="row">
+        <div class="col-md-12">
+
+    <div class="col-md-4">
+		   <div class="form-group row">
+        <label for="Machine Number" class="form-control-label col-md-4">Machine Number</label>
+        <div class="col-md-6">
+            <input type='text' name="machine_no" id="machine_no" rows='5' class='form-control machine_no'  value="{{ $row->machine_no }}" tabindex="2" readonly>
+        </div>
+        <div class="col-md-2">
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="inputIsValid" class="form-control-label col-md-4"><span style="font-style:20px;color:red;">*</span>Machine Name</label>
+        <div class="col-md-6">
+            <input class="form-control machine_name" id="machine_id" name="machine_id" size="16" type="hidden" value="{{ $row->machine_id}}">
+            <input type="text" id="machine_name" name="machine_name" class="form-control machine_name" value="{{ $row->machine_name}}"  tabindex="1" required>
+        </div>
+        <div class="col-md-2">
+        </div>
+    </div>
+
+ 
+
+    <div class="form-group row">
+        <label for="Department Name" class="form-control-label col-md-4"><span style="font-style:20px;color:red;">*</span>Department Name</label>
+        <div class="col-md-6">
+            <select name="department_id" id="department_id" class="department_id select2" required="true">
+                {!!$department_id!!}
+            </select>
+        </div>
+        <div class="col-md-1 showinline">
+            <span class="showspan"><i class="fa fa-refresh jcr_department_id"></i></span>
+        </div>
+        <div class="col-md-2"></div>
+    </div>
+   <div class=" form-group row">
+        <label for="Machine Capacity" class="form-control-label col-md-4">Machine Capacity</label> 
+        <div class="col-md-6">
+           <input type="text" name="capacity" id="capacity" class="form-control capacity"  value="{{ $row->capacity }}" tabindex="4" >  
+        </div>
+        <div class="col-md-2">
+        </div>
+    </div>
+
+     <div class="form-group row">
+        <label for="inputIsValid" class="form-control-label col-md-4"><span style="font-style:20px;color:red;">*</span>Asset Code</label>
+         <div class="col-md-6 ">
+              <input type="text"  name='asset_code'  id="asset_code" class="form-control asset_code" value="{{ $row->asset_code}}"  required="true">
+        </div>
+
+        <div class="col-md-1">
+           
+        </div>
+    </div>
+ <div class="form-group row">
+        <label for="Department Name" class="form-control-label col-md-4"><span style="font-style:20px;color:red;">*</span>Group</label>
+        <div class="col-md-6">
+            <select name="group_id" id="group_id" class="group_id select2" required="true">
+                {!!$group_id!!}
+            </select>
+        </div>
+        <div class="col-md-1 showinline">
+       
+        </div>
+        <div class="col-md-2"></div>
+    </div>
+</div>
+<div class="col-md-4">
+
+  <div class="form-group row">
+            <label for="active" class="form-control-label col-md-4"><span style="font-style:20px;color:red;">*</span>Location</label>
+            <div class="col-md-6 sel2" style="pointer-events:none;">
+                <select name='locationid' rows='5' class='select2 locationid' id="locationid" >
+            {!! $locationid !!}
+                </select>
+            </div>
+            
+       </div>
+
+<!-- <div class="form-group row">
+        <label for="inputIsValid" class="form-control-label col-md-4"><span style="font-style:20px;color:red;">*</span>Location</label>
+        <div class="col-md-6">
+            <select name="locationid" id="locationid" class="locationid select2" required="true" >
+                {!!$locationid!!}
+            </select>
+</div>
+        <div class="col-md-1 showinline">
+            <span class="showspan"><i class="fa fa-refresh jcr_location_id"></i></span>
+        </div>
+        <div class="col-md-2"></div>
+    </div> -->
+        <div class="form-group row">
+        <label for="inputIsValid" class="form-control-label col-md-4">Relocated Date</label>
+       <div class="col-md-6">
+			<div class="input-group date form_date col-md-12" data-date="" data-date-format="dd MM yyyy" data-link-field="dtp_input2" data-link-format="yyyy-mm-dd">
+			<input class="form-control relocated_date datepicker" id="relocated_date" name="relocated_date" size="16" type="text" value="{{ $row->relocated_date }}" tabindex="5" >
+			 <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span> 
+			</div>
+			</div>
+    </div>
+
+<div class=" form-group row">
+        <label class="form-control-label col-md-4">Purchased Date</label>
+       <div class="col-md-6">
+			<div class="input-group date form_date col-md-12" data-date="" data-date-format="dd MM yyyy" data-link-field="dtp_input2" data-link-format="yyyy-mm-dd">
+			<input class="form-control purchased_date datepicker" id="purchased_date" name="purchased_date" size="16" type="text" value="{{ $row->purchased_date }}" tabindex="5" >
+			 <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span> 
+			</div>
+			</div>
+        
+    </div>
+
+    <div class="form-group row">
+        <label for="inputIsValid" class="form-control-label col-md-4">Machine Make</label>
+         <div class="col-md-6 ">
+              <input type="text"  name='machine_make'  id="machine_make" class="form-control machine_make" value="{{ $row->machine_make}}" >
+        </div>
+
+        <div class="col-md-1">
+           
+        </div>
+    </div>
+
+    <div class="form-group row">
+            <label for="active" class="form-control-label col-md-4">Created By</label>
+            <div class="col-md-6 sel2" style="pointer-events:none;">
+                <select name='created_by' rows='5' class='select2 created_by' id="created_by" >
+            {!! $created_by !!}
+                </select>
+            </div>
+            
+       </div>
+
+
+    
+
+
+</div>
+<div class="col-md-4">
+     <div class="form-group row">
+        <label for="inputIsValid" class="form-control-label col-md-4">Machine Remarks</label>
+        <div class="col-md-6">
+              <textarea type="text"  name='remarks' id="remarks" class="form-control remarks">{{ $row->remarks}}</textarea>
+        </div>
+        <div class="col-md-1">
+            
+        </div>
+    </div>
+ 
+<div class="form-group row">
+        <label for="inputIsValid" class="form-control-label col-md-4">Machine Cost</label>
+        <div class="col-md-6 ">
+              <input type="text"  name='machine_cost' id="machine_cost" class="form-control machine_cost" value="{{ $row->machine_cost}}" >
+        </div>
+     
+        <div class="col-md-1 showinline">
+            
+        </div>
+    </div>
+           
+         <div class="form-group row">
+           <label for="active" class="form-control-label col-md-4 ">Upload Image</label>
+           <div class="col-md-6">
+             <input type="file" id="choosefile" name="choosefile" class="choosefile" tabindex="6" >
+             
+          </div>
+       </div>
+    
+
+             
+         <div class="form-group row">
+            <label for="inputIsValid" class="form-control-label col-md-4">Critical </label>
+            <div class="col-md-6 sel2">
+       <select name='critical' rows='5' class='form-control select2 critical'>
+           <option {{$row->critical == "high" ? "selected" : "" }} value="high">High</option>
+           <option {{$row->critical == "medium" ? "selected" : "" }} value="medium">Medium</option>
+           <option {{$row->critical == "low" ? "selected" : "" }} value="low">Low</option>
+         {!!$row->critical !!}
+       </select>
+           </div>
+             </div>
+           <div class="form-group row">
+            <label for="inputIsValid" class="form-control-label col-md-4">Day Working Hour</label>
+            <div class="col-md-6 sel2">
+     <input class="form-control day_working_hrs" id="day_working_hrs" name="day_working_hrs" size="16" type="text" value="{{ $row->day_working_hrs }}" tabindex="5" >
+			
+           </div>
+             </div>    
+
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+    <h3 class="myheaders">VENDOR DETAILS</h3>
+    </div>
+
+            <div class="col-md-4">
+            <div class="form-group row panel-body remarks_cfg">
+                <label for="inputIsValid" class="form-control-label col-md-4">Vendor</label>
+                <div class="col-md-6">
+                    <select name='vendor_id' rows='5' class='form-control vendor_id select2' data-show-subtext="true" data-live-search="true" > {!!$vendor_id!!}
+                    </select>
+                </div>
+                <div class="col-md-2 showinline">
+                <span class="showspan"><i class="fa fa-refresh jcr_vendor_id"></i></span>   
+                </div>
+            </div>
+            </div>
+           
+                 <div class="col-md-4">
+                <div class="form-group row panel-body remarks_cfg">
+                    <label for="inputIsValid" class="form-control-label col-md-4">AMC Vendor</label>
+                    <div class="col-md-6">
+                        <select name='amc_vendor_id' rows='5'  class='form-control amc_vendor_id select2' data-show-subtext="true" data-live-search="true" >
+                      {!! $amc_vendor_id !!}
+						</select>
+                    </div>
+                    <div class="col-md-2">
+                    <span class="showspan"> <i class="fa fa-refresh jcr_amc_vendor_id"></i></span>
+                    </div>
+                </div>
+                </div>
+                     <div class="col-md-4">
+                    <div class="form-group row panel-body remarks_cfg">
+                        <label for="inputIsValid" class="form-control-label col-md-4">Renewal Date</label>
+                        <div class="col-md-6">
+			<div class="input-group date form_date col-md-12" data-date="" data-date-format="dd MM yyyy" data-link-field="dtp_input2" data-link-format="yyyy-mm-dd">
+			<input class="form-control renewal_date datepicker" id="renewal_date" name="renewal_date" size="16" type="text" value="{{ $row->renewal_date }}" tabindex="5" >
+			 <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span> 
+			</div>
+			</div>
+                    </div>
+                </div>
+                 
+                 
+               
+                    <div class="col-md-4">
+                    <div class="form-group row panel-body remarks_cfg">
+                        <label for="inputIsValid" class="form-control-label col-md-4">From Date</label>
+                       <div class="col-md-6">
+			<div class="input-group date form_date col-md-12" data-date="" data-date-format="dd MM yyyy" data-link-field="dtp_input2" data-link-format="yyyy-mm-dd">
+			<input class="form-control from_date datepicker" id="from_date" name="from_date" size="16" type="text" value="{{ $row->from_date }}" tabindex="5" >
+			 <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span> 
+			</div>
+			
+			</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group row panel-body">
+                        <label for="inputIsValid" class="form-control-label col-md-4">To Date</label>
+                        <div class="col-md-6">
+			<div class="input-group date form_date col-md-12" data-date="" data-date-format="dd MM yyyy" data-link-field="dtp_input2" data-link-format="yyyy-mm-dd">
+			<input class="form-control to_date datepicker" id="to_date" name="to_date" size="16" type="text" value="{{ $row->to_date }}" tabindex="5" >
+			 <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span> 
+			</div>
+		
+			</div>
+                    </div>
+                </div>
+</div>
+<div class="row">
+<div class="col-md-12">
+<hr class="xlg">
+</div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+		<h4> Preventive Maintainence</h4>
+       <a href="javascript:void(0);" class="add_row additem newitem" rel=".rcopy">
+            <i class="fa fa-plus"></i> New Item</a>
+
+        <div id="preview-area" class="chandru">
+            <table class="overflow-y preview suppliersite_table">
+
+                <thead>
+                    <tr>
+                 <th>Frequency</th>
+                        <th>Date</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody class="suppsite_body">
+                    <!--Edit Mode-->
+                    <?php  if (count($linedata) >= 1) {    ?>
+                        @foreach($linedata as $key=>$value)
+                        <tr class="rcopy clone">
+                            <td>
+                                <input type="hidden" name="bulk_machine_lines_id[]" class="form-control bulk_machine_lines_id " value="{{$value->supplier_site_id }}" readonly="readonly">
+                            </td>
+                           
+                             <td>
+                                    <select name="bulk_frequency_id[]" class="select2  bulk_frequency_id " required>{!! $value->frequency_id !!}</select>
+                                </td>
+                            <td class="">
+                <input type="text" name="bulk_frequency_date[]" class="form-control datepicker1 input-sm bulk_frequency_date"  required value="{{ $value->frequency_date }}">
+            </td>
+            <td>
+                <a class="remove remove0"><i class="fa btn-xs fa-2x fa-minus-circle rem" aria-hidden="true"></i></a>
+                <input type="hidden" name="counter[]">
+            </td>
+                            
+                        </tr>
+                        @endforeach
+                        <!--Create Mode-->
+                        <?php } if (count($linedata) < 1) { ?>
+                            <tr class="rcopy clone">
+                                <td>
+                                 <input type="hidden" name="bulk_machine_lines_id[]" class="form-control bulk_machine_lines_id " value="" readonly="readonly">
+                                </td>
+                                <td>
+                                    <select name="bulk_frequency_id[]" class="select2  bulk_frequency_id " required>{!! $frequency_id!!}</select>
+                                </td>
+                                <td class="">
+                <input type="text" name="bulk_frequency_date[]" class="form-control datepicker1 input-sm bulk_frequency_date"  required value="{{ $value->frequency_date }}">
+            </td>
+             <td>
+                    <a class="remove remove0"><i class="fa btn-xs fa-2x fa-minus-circle rem" aria-hidden="true"></i></a>
+                    <input type="hidden" name="counter[]">
+                </td>
+                            </tr>
+
+                            <?php } ?>
+                </tbody>
+            </table>
+            <input type="hidden" name="enable-masterdetail" value="true">
+        </div>
+        <br>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-lg-12 col-md-12">
+        <div class="form-group text-center">
+            <button type="button" class="btn save saveform" value="SAVE">SAVE</button>
+                <!--<button type="button" class="btn save saveform" value="SAVENEW">SAVE AND NEW</button>                -->
+                <a href="{{ URL::to('addmachine') }}" class='btn cancel'>Cancel</a>
+                
+
+        </div>
+    </div>
+</div>
+                 
+          
+
+        </form>
+        </div>
+        </div>
+<style type="text/css">
+
+</style>
+<script src="{{ asset('js/jquery.validate.js') }}"></script>
+
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/jquery.validate.js"></script>-->
+
+<script>
+
+    $(document).ready(function () {
+
+
+/**********Up/down/left/right arrow navigation start*******/
+        $('input').keyup(function (e) {
+            if (e.which == 39) { // right arrow
+              $(this).closest('td').next().find('input').focus();
+     
+            } else if (e.which == 37) { // left arrow
+              $(this).closest('td').prev().find('input').focus();
+     
+            } else if (e.which == 40) { // down arrow
+              $(this).closest('tr').next().find('td:eq(' + $(this).closest('td').index() + ')').find('input').focus();
+     
+            } else if (e.which == 38) { // up arrow
+              $(this).closest('tr').prev().find('td:eq(' + $(this).closest('td').index() + ')').find('input').focus();
+            }
+        });
+        
+         $('.add_row').click(function() {
+              var form=$("#machineform");
+            form.parsley().destroy();
+        });
+        $(".add_row").relCopy();
+    $('.add_row').click(function() {
+        changeClassfields(); 
+    });
+	$(document).on('keypress','.machine_cost', function(ev){
+            var regex = new RegExp("^[0-9.]+$");
+                    var str = String.fromCharCode(!ev.charCode ? ev.which : ev.charCode);
+                    if (regex.test(str)) {
+                        return true;
+                    }
+                    ev.preventDefault();
+                    return false;
+        });
+
+         $('#savestatus').val('');
+
+    $(document).on('click','.saveform',function()
+    {
+            var btnval      = $(this).val();
+            if(btnval == 'APPLYCHANGES')
+                var savestatus = 'APPLY CHANGES';
+            else if(btnval == 'DRAFT')
+                var savestatus = 'DRAFT';
+            else if(btnval == 'SAVE' || btnval == 'SAVENEW')
+                var savestatus = 'SAVE';
+
+            $('#savestatus').val(savestatus);
+
+            var url     = "{{ URL::to('machinesave') }}";
+            var red_url     ="{{ URL::to('addmachine') }}";
+            var create_url  ="{{ URL::to('createmachine') }}";
+            validationrule('machineform');
+            var formdata    = $('#machineform').serialize();
+           if(btnval != "APPLYCHANGES")
+            {
+               var form = $('#machineform');
+                form.parsley().validate();
+
+                if (form.parsley().isValid())
+                {
+                           var a= $("#choosefile").val();
+
+					//change_date();
+                    $('.ajaxLoading').show();
+
+                  var form_data = new FormData(document.getElementById('machineform'));
+                $.ajax({
+                  url: "{{URL::to('machinesave')}}",
+                  type: "POST",
+                  data: form_data,
+                  enctype: 'multipart/form-data',
+                  processData: false,  // tell jQuery not to process the data
+                  contentType: false,   // tell jQuery not to set contentType
+                  async:true,
+                  xhr: function(){
+                      var xhr = $.ajaxSettings.xhr();
+                    if (xhr.upload) {
+                        xhr.upload.addEventListener('progress', function(event) {
+                                var percent = 0;
+                                var position = event.loaded || event.position;
+                                var total = event.total;
+                                if (event.lengthComputable) {
+                                        percent = Math.ceil(position / total * 100);
+                                }
+                                        //update progressbar
+
+                                }, true);
+                        }
+          return xhr;
+
+                },
+                 success: function (data) {
+         	var status  = data.status;
+		var msg     = '<span style="color:#090065">'+data.auto_no+'</span>  '+data.message;
+		var id      = data.id;
+		var auto_no = data.auto_no;
+		var edit_url	="{{URL::to('createmachine')}}/"+id;
+		if(btnval !='SAVE' && btnval !='DRAFT'  && btnval !="APPROVED" && btnval !="REJECT")
+		{
+		notyMsg(status,msg);
+		setTimeout(function(){
+
+				$('.ajaxLoading').hide();
+		window.location.href=create_url;
+		}, 1500);
+		} else if(btnval =="APPROVED" || btnval =="REJECT"){
+			notyMsg(status,msg);
+			setTimeout(function(){
+
+					$('.ajaxLoading').hide();
+
+			window.location.href="{{URL::to('salesorderapproval')}}";
+			}, 1500);
+			
+		}else
+		{
+			notyMsg(status,msg);
+			setTimeout(function(){
+					$('.ajaxLoading').hide();
+			window.location.href=red_url;
+			}, 1500);
+		}
+	//	});
+           },
+         error: function(response) {
+        	$('.ajaxLoading').hide();
+               var errors = response.responseJSON.errors;
+
+               var errorsHtml = '';
+
+               $.each( errors, function( key, value ) {
+                   errorsHtml += '<p>'+ value[0] + '</p>';
+               });
+             
+    notyMsg("error",errorsHtml);
+            }
+       });
+                } }
+//                 }).done(function(data)
+                
+// 		{
+// 		var status  = data.status;
+// 		var msg     = '<span style="color:#090065">'+data.auto_no+'</span>  '+data.message;
+// 		var id      = data.id;
+// 		var auto_no = data.auto_no;
+// 		var edit_url	="{{URL::to('createmachine')}}/"+id;
+// 		if(btnval !='SAVE' && btnval !='DRAFT'  && btnval !="APPROVED" && btnval !="REJECT")
+// 		{
+// 		notyMsg(status,msg);
+// 		setTimeout(function(){
+
+// 				$('.ajaxLoading').hide();
+// 		window.location.href=create_url;
+// 		}, 1500);
+// 		} else if(btnval =="APPROVED" || btnval =="REJECT"){
+// 			notyMsg(status,msg);
+// 			setTimeout(function(){
+
+// 					$('.ajaxLoading').hide();
+
+// 			window.location.href="{{URL::to('salesorderapproval')}}";
+// 			}, 1500);
+			
+// 		}else
+// 		{
+// 			notyMsg(status,msg);
+// 			setTimeout(function(){
+// 					$('.ajaxLoading').hide();
+// 			window.location.href=red_url;
+// 			}, 1500);
+// 		}
+// 		});
+//                 }
+//             }
+//             else
+//             {
+//             $('.ajaxLoading').show();
+//             $.post(url,formdata,function(data)
+//             {
+//                   // alert(url)
+//                     var status = data.status;
+//                     var msg    = data.message;
+//                     var id     = data.id;
+//                     var edit_url    ="{{ URL::to('supplieredit') }}/"+id;
+//                             notyMsg(status,msg);
+//                           window.location.href=edit_url;
+
+//                 });
+//             }
+
+    });
+
+
+      
+
+$(".jcr_frieghtcarriers_id").click(function(){
+        $(".frieghtcarriers_id").jCombo("{{ URL::to('jcomboform?table=m_frieghtcarriers_hdr_t:ar_frieghtcarriers_hdr_id:carrier_name')  }}&parent="+company1+"&order_by=carrier_name asc",
+        {selected_value:""});
+    });
+        $(".tds_percentages").click(function(){
+        $(".tds_percentage").jCombo("{{ URL::to('jcomboform?table=f_tds_slab_t:tds_percentage:tds_percentage') }}",
+        {selected_value:""});
+    });
+        
+        $(".jcr_frieghtterm_id").click(function(){
+        $(".frieghtterm_id").jCombo("{{ URL::to('jcomboform?table=m_frieghtterms_t:frieghtterm_id:fob_point_name') }}&parent="+company1+"&order_by=fob_point_name asc",
+        {selected_value:""});
+
+
+    });
+
+
+$(".jcr_department_id").click(function(){
+        $(".department_id").jCombo("{{ URL::to('jcomboform?table=ma_department_t:department_id:department_no|department_name') }}&order_by=department_no asc",
+        {selected_value:""});
+    });    
+    $(document).on('click', '.jcr_vendor_id', function () {
+            $(".vendor_id").jCombo("{{ URL::to('jcomboform?table=m_amc_tb:vendor_id:vendor_name') }}&order_by=vendor_name asc",
+            {selected_value: ""});
+        });
+        
+$(document).on('click','.jcr_amc_vendor_id',function(){
+            $(".amc_vendor_id").jCombo("{{ URL::to('jcomboform?table=m_amc_tb:vendor_id:vendor_name') }}&order_by=vendor_name asc",
+            {selected_value:""});
+        });
+
+/*deepika purpose:remove function*/
+        $(document).on('click', '.remove', function ()
+        {
+            var index = $(this).closest('tr').index();
+            var rowCount = $('.suppliersite_table tbody tr').length;
+            if (rowCount > 1)
+            {
+                $(this).closest("tr").remove();
+                removeClass('bulk_machine_lines_id');
+                removeClass('bulk_frequency_id');
+                removeClass('bulk_frequency_date');
+                
+            } else
+            {
+                notyMsg('info',"You Can't Delete Atleast One row should be there");
+            }
+        });
+
+
+                changeClassfields();
+
+        /********************* end ****************************/
+     
+ var data ="{{\Session::get('j_date_format')}}";
+
+  $( ".datepicker1" ).datepicker({
+      changeMonth: true,
+      dateFormat: data,
+      changeYear: true,	  
+      maxDate: null,
+      onClose: function () {
+        $(this).parsley().validate();
+        }
+
+    })       
+    });
+
+
+function changeClassfields()
+{
+        changeClassName('bulk_machine_lines_id');
+        changeClassName('bulk_frequency_id');
+        changeClassName('bulk_frequency_date');
+     }
+
+    function changeClassName(className) {
+            $('.' + className).each(function(index) {
+                if (className == "bulk_line_no") {
+                    $(this).val(index + 1).attr("readonly", 1);
+                }
+
+                $(this).removeClass(className + '0');
+                $(this).addClass(className + index);
+                $('.'+className+index).css('pointer-events','');
+            });
+        }
+   function removeClass1(className)
+    {
+        var rowCount = $('.contact_table tbody tr').length;
+        for (var i = 0; i <= rowCount; i++)
+        {
+            $('.contact_table tbody tr').find('.' + className).removeClass(className + i);
+        }
+        $('.' + className).each(function (index)
+        {
+            $(this).addClass(className + index);
+        });
+
+    }
+    function changeClassName1(className)
+    {
+        $('.' + className).each(function (index) {
+            $(this).removeClass(className + '0');
+            $(this).addClass(className + index);
+        });
+    }
+    function changeclassfields1()
+{
+    changeClassName1('contact_name');
+}
+    function removeClass(className)
+    {
+        var rowCount = $('.suppliersite_table tbody tr').length;
+        for (var i = 0; i <= rowCount; i++)
+        {
+            $('.suppliersite_table tbody tr').find('.' + className).removeClass(className + i);
+        }
+        $('.' + className).each(function (index)
+        {
+            $(this).addClass(className + index);
+        });
+
+    }
+</script>
+
+<style>
+    .btn-xs {
+        display: inline-block;
+        min-width: 10px;
+        margin: 2px 5px;
+        /*padding: 10px 15px 12px;*/
+        padding:5px;
+        /*font: 700 12px/1 'Open Sans', sans-serif;*/
+        border-radius: 3px;
+        /*box-shadow: inset 0 -1px 0 1px rgba(0, 0, 0, 0.1), inset 0 -10px 20px rgba(0, 0, 0, 0.1);*/
+        cursor: pointer;
+    }
+u {
+    text-decoration: underline;
+   width: 265px;
+   margin-top: -66px;
+   margin-left: 0px;
+   font-weight:700;
+}
+
+</style>
+@include('layouts.php_js_validation')
+@endsection

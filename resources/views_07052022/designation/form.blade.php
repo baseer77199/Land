@@ -1,0 +1,390 @@
+@extends('layouts.header')
+@section('content')
+
+<h2 class="heads">Designation</h2>
+
+<div class="card">
+
+
+    <div class="card-body card-block">
+
+      <form  action="" id="save">
+        <input type="hidden" name="edit_id" value="" id="edit_id" />
+                {{ csrf_field()}}
+
+<div class="row">
+  <div class="col-md-6">
+      <div class=" form-group row">
+          <label for="fob_point_name" class="form-control-label col-md-5"><span style="color:red;">*</span>Designation Name</label>
+          <div class="col-md-7">
+             
+              <input type="text" id="designation_name" name="designation_name" class="form-control designation_name" value="" required style="width:100%;" tabindex="1">
+      </div>
+      <div>
+              <span class="btn btn-danger dup_name" style="display:none;"></span>
+          </div>
+      </div>
+     
+  </div>
+
+ 
+<div class="col-md-6">
+  
+   
+     <div class="form-group row">
+          <label for="active" class="form-control-label col-md-5">Description</label>
+          <div class="col-md-7">
+
+              <textarea name="description" id="description" class="form-control"> </textarea>
+          </div>
+      </div>
+       
+      
+        
+</div>
+
+</div>
+        <div class="row text-center">
+			<a href="{{url('designationupload')}}"><button type="button"  class="btn upload  upload-image" tabindex="5">Upload</button></a>
+            <button type="button"  class="btn save saveform" tabindex="5">Save</button>
+            <?php include('toolbar.php'); ?>
+        </div>
+</form>
+
+
+
+<div class="row">
+  <div class="col-md-12" style="padding:15px;">
+    <table id="designationgrid1"></table>
+  </div>
+</div>
+</div>
+</div>
+
+<script>
+
+  $(document).ready(function(){
+    
+  $("#designationgrid1").jqGrid(
+            {
+                url: "designationgrid",
+                datatype: "json",
+                mtype: "GET",
+                colModel: [
+                    { name: "designation_id", label: "designation_id", width: 250, hidden: true },
+                    { name: "designation_name", label: "Designation Name", width: 250,editable: true},
+                  
+                    { name: "description", label: "Description", width: 250,editable:true},
+                    
+                ],
+                iconSet: "fontAwesome",
+                rowNum: 10,
+                rowList: [10,20,100,250,500,1000,2000],
+                sortname: "designation_id",
+                sortorder: "desc",
+                viewrecords: true,
+                gridview: true,
+                rownumbers:true,
+                pager: "#designationgrid1",
+                multiselect:false,
+                multipageselection:true,
+                searching: {
+                defaultSearch: "cn",
+                },
+            });
+     jQuery("#designationgrid1").jqGrid('filterToolbar',{stringResult: true,searchOnEnter : false});
+  $("#designationgrid1").jqGrid("setLabel", "rn", "S.No");
+   showcolumn("designationgrid1");
+   
+  /*Karthigaa Purpose For PDF Download*/
+  $(document).on('click',".exportpdf",function() {
+    $("#designationgrid1").jqGrid('exportToPdf', {
+  title: null,
+  orientation: 'portrait',
+  pageSize: 'A4',
+  description: null,
+  onBeforeExport: null,
+  download: 'download',
+  includeLabels : true,
+  includeGroupHeader : true,
+  includeFooter: true,
+  fileName : "Designation.pdf",
+  mimetype : "application/pdf"  
+});   
+});
+/*Karthigaa Purpose For Excel Download*/  
+  $(document).on('click',".exportexcel",function() {
+            $("#designationgrid1").jqGrid("exportToExcel",{
+          includeLabels : true,
+              includeGroupHeader : true,
+              includeFooter: true,
+              fileName : "Designation.xlsx"
+        })     
+  });
+  
+
+  $(".clearsearch").click(function()
+  {
+    var grid = $("#designationgrid1");
+    grid.jqGrid('setGridParam',{search:false});
+    var postData = grid.jqGrid('getGridParam','postData');
+    $.extend(postData,{filters:""});
+    grid.trigger("reloadGrid",[{page:1}]);
+    $('input[id*="gs_"]').val("");
+    
+  });
+
+
+            $('.clear').click(function(){
+      var form=$('#save');
+       form.parsley().destroy();
+        $(':input','#save').not(':button, :submit, :reset').val('').prop('checked', false); 
+    });
+  
+        /* end */
+
+ // var dup_chk = true;
+ //    function duplicate_validate()
+ //    {
+ //        var designation_name = $(".designation_name").val();
+ //        var edit_id = $("#frequency_id").val();
+ //        $.ajax({
+ //            cache: false,
+ //            url: 'amcname',
+ //            type: 'GET',
+ //            dataType: 'json',
+ //            async : false,
+ //            data: {vendor_name : vendor_name,edit_id : edit_id},
+ //            success: function(response)
+ //            {
+ //                if(response == 1)
+ //                {
+ //                    $('.dup_name').html('Frequency Name:'+designation_name+' Already Exists');
+ //                    $('.dup_name').show();
+
+ //                    $(".designation_name").val('');
+ //                    dup_chk = false;
+ //                }
+ //                else if(response == 0)
+ //                {
+ //                    var html ="";
+ //                    $('.dup_name').hide();
+ //                    dup_chk  = true;
+ //                }
+ //            },
+ //            error: function(xhr, resp, text)
+ //            {
+ //                console.log(xhr, resp, text);
+ //            }
+ //        });
+ //    }
+
+
+
+//             $(document).on('click', '.saveform', function() {
+
+//                 var url = "{{ url('designationsave') }}";
+//                 var form = $('#save');
+//                 form.parsley().validate();
+//                 var form = $('#save');
+//                 form.parsley().validate();
+//                 if (form.parsley().isValid()) {
+//                     change_date();
+//                     var formdata = $('#save').serialize();
+//                     $.post(url, formdata, function(data) {
+//                         var data = $.trim(data);
+//                         if(data == 1){
+//                             notyMsg("success","Saved Successfullly");
+//                             $("#designationgrid1")[0].triggerToolbar();
+//                         $( '#save' ).each(function(){
+//     this.reset();
+// });
+
+//                         }
+//                         else{
+//                             notyMsg("success","Updated Successfullly");
+//                             $("#designationgrid1")[0].triggerToolbar();
+//                           $("#edit_id").val('');
+//                             $( '#save' ).each(function(){
+//     this.reset();
+// });
+//                         }
+                       
+//                     });
+//                 }
+//             });
+  $(document).on('click', '.saveform', function() {
+    var url = "{{ url('designationsave') }}";
+    var formData = $('#save').serialize();
+    $.ajax({
+          url: url,
+          type:     'post',
+          data:     formData,
+          dataType: 'json',
+          success: function (response) {
+            if(response == 1){
+              notyMsg("success","Saved Successfullly");
+              //$("#grid1")[0].triggerToolbar();
+              $('#edit_id').val('');
+              $('#designation_name').val('');
+              window.location.reload();
+              $('#description').val('');
+            }else{
+              notyMsg("success","Updated Successfullly");
+              //$("#grid1")[0].triggerToolbar();
+              $('#edit_id').val('');
+              $('#department_name').val('');
+              $('#description').val('');
+              window.location.reload();
+            }
+          },
+         error: function(response) {
+        
+               var errors = response.responseJSON.errors;
+
+               var errorsHtml = '';
+
+               $.each( errors, function( key, value ) {
+                   errorsHtml += '<p>'+ value[0] + '</p>';
+               });
+             
+    notyMsg("error",errorsHtml);
+            
+           }
+       });
+            });
+
+
+                 
+                 
+          //   });
+            $("#editdata").click(function()
+            {
+
+                var gr = jQuery("#designationgrid1").jqGrid('getGridParam','selrow');
+                var designation_id = jQuery("#designationgrid1").jqGrid ('getCell', gr, 'designation_id');
+                var designation_name = jQuery("#designationgrid1").jqGrid ('getCell', gr, 'designation_name');
+               //alert(frequency_name);
+                var description = jQuery("#designationgrid1").jqGrid ('getCell', gr, 'description');
+               if( designation_id)
+                {
+                     $('#edit_id').val(designation_id);
+                  //  $('#department_id').val(department_id);
+                    $('#description').val(description);
+                    $('#designation_name').val(designation_name);
+                 
+
+                }
+                else
+                {
+                    notyMsg('INFO','Please Select a Row');
+                }
+            });
+              
+            // $(document).on('click','.del',function(e){
+
+            //     e.preventDefault();
+            //     var gr = jQuery("#designationgrid1").jqGrid('getGridParam','selrow');
+            //     var cellValue = jQuery("#designationgrid1").jqGrid ('getCell', gr, 'designation_id');
+             
+            //     if(cellValue )
+            //     {
+            //         $.get('designationdelete?del_id='+cellValue, function(data,status)
+            //         {
+            //             if(data == 0)
+            //             {
+            //                 notyMsg('Warning','Deleted Successfully');
+            //                 $("#designationgrid1")[0].triggerToolbar();
+            //             }
+            //             else if(data == 2)
+            //             {
+            //                 notyMsg('SUCCESS','Deleted Successfully');
+            //                 $("#designationgrid1")[0].triggerToolbar();
+            //             }
+            //         });
+            //     }
+            //     else
+            //     {
+            //         notyMsg('Info','Please Select a Row');
+            //     }
+
+
+            // });
+
+
+
+            
+$('#delete').click(function(){
+ // alert("dfhgfd");
+  var gr = jQuery("#designationgrid1").jqGrid('getGridParam','selrow');
+  var id = jQuery("#designationgrid1").jqGrid ('getCell', gr,'designation_id');
+    
+
+  if(gr ){
+    swal({
+                title: "Are you sure?",
+                text: "You want to delete!",
+                type: "warning",
+                showCancelButton: !0,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Yes",
+                cancelButtonText: "No",
+            closeOnCancel:!1
+            }, function(e) {
+      if(e == true)
+      {
+        var url ="{{ url('designationdelete') }}/" +id;
+       
+        $.get(url,function(data)
+        {
+          var data = $.trim(data);
+          //location.reload();
+          if(data =='0')
+          {
+            notyMsgs('success','Deleted Successfully');
+            //location.reload();
+             $('.clearsearch').trigger('click');
+              $(".reset").trigger('click');
+           
+
+              $("#designationgrid1")[0].triggerToolbar();
+           
+          }
+          if(data =='1')
+          {
+            notyMsgs('info',"You Can't delete  Used in SomeWhere");
+            $('.clearsearch').trigger('click');
+          }
+
+        });
+            }
+            else
+            {
+            $('.apply').css('display','none');
+            $('.clearsearch').trigger('click');
+            swal("Cancelled");
+            }
+            });
+             $('.apply').css('display','none');
+          }
+      else{
+            notyMsg("info","Please Select a Row");
+        }
+    });
+
+
+    
+            $('.reset').click(function(){
+              //alert('sffdsf');
+               $('#designation_id').val('');
+               $('#designation_name').val('');
+               $('#description').val('');
+                
+            });
+
+
+
+
+  });
+  </script>
+@endsection

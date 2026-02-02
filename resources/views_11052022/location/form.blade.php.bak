@@ -1,0 +1,618 @@
+@extends('layouts.header')
+@section('content')
+<?php include('tools_menu.php');?>
+<span class="ui_close_btn"></span>
+
+
+
+
+<h2 class="heads"> Location <span class="ui_close_btn"><a class="collapse-close pull-right btn-danger" onclick='location.href="{{ url($pageModule) }}"'></a></span></h2>
+
+
+
+<div class="card">
+
+
+<div class="card-body card-block">
+<div class="row">
+   <div class="col-md-12">
+
+<form method="post" action="" id="location_form"  data-parsley-validate enctype="multipart/form-data">
+   
+{{ csrf_field() }}
+     <!------------------------------------- Body content start here---------------------------->
+     
+   
+   
+    <div class="row">
+		<div class="col-md-4">
+			<div class="form-group">
+				<label for="inputIsValid" class="form-control-label col-md-4"><span class="req">*</span>Location Name</label>
+				<div class="col-md-8">
+					<input class="form-control location_id" id="location_id" name="location_id" size="16" type="hidden" value="{{$row->location_id}}">
+					<input type="text" id="location_name" name="location_name" class="form-control location_name" value="{{$row->location_name}}" required>
+					<span class="btn btn-danger dup_name" style="display:none; font-size:9px"></span>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-4">
+			<div class="form-group">
+				<label for="inputIsValid" class="form-control-label col-md-4"><span class="req">*</span>Location Code</label>
+				<div class="col-md-8">
+					<input type="text" id="location_code" name="location_code" class="form-control location_code" value="{{$row->location_code}}" required>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-4">
+			<div class="form-group">
+				<label for="inputIsValid" class="form-control-label col-md-4"><span class="req">*</span>Location Type</label>
+				<div class="col-md-6">
+					<select name='location_type' style="width: 100%;" class='form-control location_type select2' required>
+					</select>
+               </div>
+				<div class="col-md-1 showinline">
+					<span class="showspan"> <i class="fa fa-refresh jcr_product_group_id"></i></span>
+			    </div>
+			</div>
+		</div>
+		<div class="col-md-4">
+			<div class="form-group">
+				<label for="inputIsValid" class="form-control-label col-md-4">Address</label>
+				<div class="col-md-8">
+					<input type="text" id="address" name="address" class="form-control address" value="{{$row->address}}" >
+				</div>
+			</div>
+		</div>
+		<div class="col-md-4">
+			<div class="form-group">
+				<label for="inputIsValid" class="form-control-label col-md-4">Street Name</label>
+				<div class="col-md-8">
+					<input type="text" id="street_name" name="street_name" class="form-control street_name" value="{{$row->street_name}}" >
+				</div>
+			</div>
+		</div>
+		<div class="col-md-4">	
+			<div class="form-group">
+				<label for="inputIsValid" class="form-control-label col-md-4"><span class="req">*</span>Country</label>
+				<div class="col-md-8">
+					<select name='country_id' style="width: 100%;" class='form-control country_id select2'  data-show-subtext="true" data-live-search="true" required >
+                    </select>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-4">
+			<div class="form-group">
+				<label for="inputIsValid" class="form-control-label col-md-4"><span class="req">*</span>State</label>
+				<div class="col-md-8">
+					<select name='state_id' style="width: 100%;" class='form-control state_id select2'  data-show-subtext="true" data-live-search="true" required >
+                    </select>
+				</div>
+			</div> 
+		</div>
+		<div class="col-md-4">
+			<div class="form-group">
+				<label for="inputIsValid" class="form-control-label col-md-4"><span class="req">*</span>City</label>
+				<div class="col-md-8">
+					<select name='city_id' style="width: 100%;" class='form-control city_id select2'  data-show-subtext="true" data-live-search="true"  required>
+                    </select>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-4">
+			<div class="form-group" style="display:none;">
+				<label for="inputIsValid" class="form-control-label col-md-4"><span class="req">*</span>Area</label>
+				<div class="col-md-6">
+					<select name='area' style="width: 100%;" class='form-control area select2'   data-show-subtext="true" data-live-search="true"  >
+                    </select>
+				</div>
+				<div class="col-md-1 showinline">
+					<span class="showspan"> <i class="fa fa-refresh jcr_product_group_id"></i></span>
+			    </div>
+			</div>
+		</div>
+		<div class="col-md-4">
+			<div class="form-group">
+				<label for="inputIsValid" class="form-control-label col-md-4">Pincode</label>
+				<div class="col-md-8">
+					<input type="text" id="pincode" name="pincode" class="form-control pincode" value="{{$row->pincode}}" maxlength="6" >
+					<span class="pin " style="color:red">Please Enter only Number</span>
+				</div>
+			</div>  
+		</div>
+		<div class="col-md-4">  
+			<div class="form-group">
+				<label for="active" class="form-control-label col-md-4">Active</label>
+				<div class="col-md-8">
+					<select name='active' id="active" rows='5' class=' select2 active'  >
+						<option <?php if ($row->active == "Yes"){ echo "selected" ; }?> value="Yes" >Yes</option>
+						<option <?php if ($row->active == "No"){ echo "selected" ; }?> value="No" >No</option>
+					</select>
+				</div>
+			</div>
+		</div>
+	   
+     
+   </div>
+   <div class="row">
+     <div class="col-lg-12 col-md-12">
+         <div class="form-group text-center">
+           
+
+             
+             <!--   <button type="button"  class="btn btn-cancel cancel reset" >Clear</button> -->
+               <button type="button" class="btn save saveform" value="SAVE">Save</button>
+               <!--  <a id="editdata"  class="btn sec"> Edit </a>
+ <button type='button'  class='btn del delete' id="delete"> Delete </button> -->
+ <?php include('toolbar.php'); ?>
+        </div>
+     </div>
+   </div>
+     </div>
+
+  
+
+</form>
+ </div>
+     <!------------------------------------------------------------------------------------------>
+
+   </div>
+
+
+
+    
+ <div class="row">
+   <div class="col-md-12">
+
+   <table id="grid1"></table>
+ </div>
+ </div>
+   
+ </div>
+
+
+</div>
+
+
+
+
+<script src="<?php echo asset('js/plugins/parsley/dist/parsley.js')?>"></script>
+<script>
+$(document).ready(function()
+{
+
+
+
+
+  
+  $('.pin').hide();
+  $(".location_type").jCombo("{{ URL::to('jcomboformlogin?table=a_lookuplines_t:lookuplines_id:lookup_code') }}&order_by=lookup_code asc"+'&parent= lookup_type="LOCATION_TYPES" &order_by=lookup_code asc' ,
+  {selected_value:"{{$row->location_type}}"});
+
+ $(".country_id").jCombo("{{ URL::to('jcomboformlogin?table=m_countries_t:country_id:country_name') }}&order_by=country_name asc",
+  {selected_value:"{{$row->country_id}}"});
+  $(".area").jCombo("{{ URL::to('jcomboformlogin?table=m_area_t:area_id:area_name') }}&order_by=area_name asc",
+  {selected_value:""});
+$(document).on('change', '.country_id', function ()
+     {
+   
+    var country_id = $('.country_id').val();
+    if(country_id){
+		
+    $(".state_id").jCombo("{{ URL::to('jcomboformlogin?table=m_states_t:state_id:state_name') }}&parent=country_id="+country_id+ '&order_by=state_name asc',
+    {selected_value:"$value->state_id"});
+		
+}
+      $(".city_id").find('option').not(':first').remove();
+  });
+
+  $(document).on('change', '.state_id', function () {   
+    var state_id = $('.state_id').val();
+    if(state_id) {
+     $(".city_id").jCombo("{{ URL::to('jcomboformlogin?table=m_cities_t:city_id:city_name') }}&parent=state_id="+state_id+ '&order_by=city_name asc',
+    {selected_value:"$value->city_id"});
+
+ }
+  });
+
+
+  $(document).on('change', '.city_id', function () {   
+    var city_id = $('.city_id').val();
+    if(city_id) {
+     $(".area").jCombo("{{ URL::to('jcomboformlogin?table=m_area_t:area_id:area_name') }}&parent=city_id="+city_id+ '&order_by=area_name asc',
+    {selected_value:"$value->area"});
+
+ }
+  });
+
+
+   $(document).on('keyup','.pincode',function() {
+  var zip = $('#pincode').val();
+  var reg = /^[0-9]+$/;
+
+  if (!reg.test(zip)){
+
+  $('.pin').show();
+  $('.pincode').val("");
+  }else{
+$('.pin').hide();
+
+  }
+});
+
+     var dup_chk = true;
+        function duplicate_validate()
+        {
+            var location_name = $(".location_name").val();
+            var location_id = $("#location_id").val();
+
+            $.ajax({
+                cache: false,
+                url: "loccheckname", //this is your uri
+                type: 'GET',
+                dataType: 'json',
+                async : false,
+                data: {location_name : location_name,location_id : location_id},
+                success: function(response)
+                {
+                    // alert(response);
+                    console.log(response);
+                    if(response == 1)
+                    {
+                        $('.dup_name').html('Location Name:'+location_name+' Already Exists ');
+                        $('.dup_name').show();
+                        $(".location_name").val('');
+                        dup_chk = false;
+
+
+                    }
+                    else if(response == 0)
+                    {
+                        var html ="";
+                            $('.dup_name').hide();
+                        dup_chk = true;
+
+                    }
+                    else if(response == 3)
+                    {
+                        notyMsg("Error","Somethig Went Wrong!!");
+                            $('.dup_name').hide();
+                        dup_chk = false;
+
+                    }
+
+                },
+                error: function(xhr, resp, text)
+                {
+                    console.log(xhr, resp, text);
+                }
+            });
+        }
+ 
+ $(document).on('click','.saveform',function() {
+
+           var form=$("#location_form");
+             form.parsley();
+             $('input[name=_token]').val("{{csrf_token()}}");
+            form.parsley().validate();
+              var data = form.serialize();
+              duplicate_validate();
+       
+var url="{{ URL::to('locationsave') }}";
+
+if (form.parsley().isValid())
+        {
+
+       var formData = $('#location_form').serialize();
+            $.ajax({
+          url:     "{{ url('locationsave') }}",
+          type:     'post',
+          data:     formData,
+          dataType: 'json',
+          success: function (response) {
+           if(response == 1){
+            notyMsg("success","Saved Successfullly");
+            $("#grid1")[0].triggerToolbar();
+            $("#grid1")[0].triggerToolbar();
+            $(".clear").trigger('click');
+                        }
+                        else{
+                            notyMsg("success","Updated Successfullly");
+                       $("#grid1")[0].triggerToolbar();
+   $(".clear").trigger('click');
+                        }
+           },
+         error: function(response) {
+             console.log(response);
+               var errors = response.responseJSON.errors;
+
+               var errorsHtml = '';
+
+               $.each( errors, function( key, value ) {
+                   errorsHtml += '<p>'+ value[0] + '</p>';
+               });
+              // errorsHtml += '</ul></div';
+    notyMsg("error",errorsHtml);
+   //  $("#grid1")[0].triggerToolbar();
+  // $(".clear").trigger('click');
+             //  $('.messages').html(errorsHtml);
+           }
+       });
+  
+        }   
+});
+//  $(document).on('click','.saveform',function() {
+
+        
+//           var form=$("#location_form");
+//              form.parsley();
+//              $('input[name=_token]').val("{{csrf_token()}}");
+//             form.parsley().validate();
+//               var data = form.serialize();
+//               duplicate_validate();
+       
+// var url="{{ URL::to('locationsave') }}";
+
+// if (form.parsley().isValid())
+//         {
+// $.post(url, data, function(data1)
+// {
+//  var status = data1.status;
+//  var msg    = data1.message;
+//  notyMsg('success',"<i class='' style='font-size:16px'></i>"+msg);	
+//   $("#grid1")[0].triggerToolbar();
+//   $(".clear").trigger('click');
+//     });
+// }
+
+//       });
+
+ $('.clear').click(function(){
+
+$(':input','#location_form')
+  .not(':button, :submit, :reset')
+  .val('')
+  .prop('checked', false);
+$('.location_type').val("").change();
+         $('.country_id').val("").change();
+         $('.state_id').val("").change();
+	 
+         $('.area').val("").change();
+         $('.city_id').val("").change();
+            });
+
+$("#grid1").jqGrid({
+
+
+     url:"getlocationData/",
+mtype:'GET',
+datatype:'json',
+
+colModel: [
+{ name: "location_id", label: "id", width: 100,hidden:true },
+{ name: "city_id", label: "id", width: 100,hidden:true },
+{ name: "country_id", label: "id", width: 100,hidden:true },
+{ name: "lookuplines_id", label: "id", width: 100,hidden:true },
+{ name: "state_id", label: "id", width: 100,hidden:true },
+{ name: "address", label: "id", width: 100,hidden:true },
+{ name: "street_name", label: "id", width: 100,hidden:true },
+{ name: "area", label: "id", width: 100,hidden:true },
+{ name: "pincode", label: "id", width: 100,hidden:true },
+{ name: "area_id", label: "area_id", width: 100,hidden:true },
+
+{ name: "location_code", label: "Location Code",editable:true, editrules:{date:true}},
+{ name: "location_name", label: "Location Name", editable:true, editrules:{date:true}},
+{ name: "lookup_code", label: "Location Type", width: 250,editable:true},
+{ name: "country_name", label: "Country", width: 250,editable:true},
+{ name: "state_name", label: "State", width: 250,editable:true},
+{ name: "city_name", label: "City", width: 250,editable:true},
+{ name: "active", label: "active", editable:true, editrules:{date:true}},
+],
+iconSet: "fontAwesome",
+   rowNum: 10,
+    rowList: [10,20,50,100,250,500,1000],
+    sortorder: "asc",
+    viewrecords: true,
+    gridview: true,
+    rownumbers:true,    
+      pager: "#grid1",
+      autowidth: true,
+viewrecords: true,
+searching: {
+defaultSearch: "cn"
+}
+});
+
+
+	
+        showcolumn('grid1');
+
+
+    $("#exportpdf").on("click", function(){
+        $("#grid1").jqGrid('exportToPdf', {
+            title: null,
+            orientation: 'portrait',
+            pageSize: 'A4',
+            description: null,
+            onBeforeExport: null,
+            download: 'download',
+            includeLabels : true,
+            includeGroupHeader : true,
+            includeFooter: true,
+            fileName : "Location.pdf",
+            mimetype : "application/pdf",
+           customSettings:null
+        });
+    });
+
+	$("#exportexcel").on("click", function(){
+		$("#grid1").jqGrid("exportToExcel",{
+			includeLabels : true,
+			includeGroupHeader : true,
+			includeFooter: true,
+			fileName : "Location.xlsx",
+			maxlength : 40 
+		});
+                                
+                               
+    });
+
+/*purpose:clear search the jqgrid*/
+  $(".clearsearch").click(function()
+  {
+    var form=$("#location_form");
+   form.parsley().destroy();
+    var grid = $("#grid1");
+    grid.jqGrid('setGridParam',{search:false});
+    var postData = grid.jqGrid('getGridParam','postData');
+    $.extend(postData,{filters:""});
+    grid.trigger("reloadGrid",[{page:1}]);
+    $('input[id*="gs_"]').val("");
+    
+  });
+  /*end*/
+	
+	
+	/*Refresh Jcombo for Location*/
+ var comp='{{ \Session::get('companyid')}}';
+ $(document).on('click','.jcr_product_group_id',function(){
+		$(".location_type").jCombo("{{ URL::to('jcomboformlogin?table=a_lookuplines_t:lookuplines_id:lookup_code') }}&order_by=lookup_code asc"+'&parent= lookup_type="LOCATION_TYPES" &order_by=lookup_code asc' ,
+  {selected_value:"{{$row->location_type}}"});
+	  $(".area").jCombo("{{ URL::to('jcomboformlogin?table=m_area_t:area_id:area_name') }}&order_by=area_name asc",
+  {selected_value:""})
+		 
+	});
+ /*End*/
+
+jQuery("#grid1").jqGrid('filterToolbar',{stringResult: true,searchOnEnter : false});
+$("#grid1").jqGrid("setLabel", "rn", "S.No");
+
+    $("#edit").click(function()
+            {
+            var gr = jQuery("#grid1").jqGrid('getGridParam','selrow');
+            var id = jQuery("#grid1").jqGrid ('getCell', gr, 'location_id');
+            var location_name = jQuery("#grid1").jqGrid ('getCell', gr, 'location_name');
+            var location_code = jQuery("#grid1").jqGrid ('getCell', gr, 'location_code');
+            var location_type = jQuery("#grid1").jqGrid ('getCell', gr, 'lookuplines_id');
+            var country_id = jQuery("#grid1").jqGrid ('getCell', gr, 'country_id');
+            var state_id = jQuery("#grid1").jqGrid ('getCell', gr, 'state_id');
+            var city_id = jQuery("#grid1").jqGrid ('getCell', gr, 'city_id');
+            var address = jQuery("#grid1").jqGrid ('getCell', gr, 'address');
+            var street_name = jQuery("#grid1").jqGrid ('getCell', gr, 'street_name');
+            var area = jQuery("#grid1").jqGrid ('getCell', gr, 'area');
+            var area_id = jQuery("#grid1").jqGrid ('getCell', gr, 'area_id');
+            var pincode = jQuery("#grid1").jqGrid ('getCell', gr, 'pincode');
+		var active = jQuery("#grid1").jqGrid ('getCell', gr, 'active');
+            if(gr)
+            {
+
+         $('#location_id').val(id);
+         $('#location_name').val(location_name);
+         $('#location_code').val(location_code);
+         $('#address').val(address);
+         $('#street_name').val(location_code);
+         $('#pincode').val(pincode);
+         $('.area').val(area_id).change();
+         $('#location_code').val(location_code);
+         $('.location_type').val(location_type).change();
+  
+         $('.country_id').val(country_id).change();
+				$('.active').val(active).change();
+         setTimeout(function(){
+         $('.state_id').val(state_id).change();
+               setTimeout(function(){ 
+         $('.city_id').val(city_id).change();
+            }, 1000);
+           }, 1000);
+    
+     }
+            else
+            {
+            notyMsg("info","Please Select a Row");
+            }
+            });
+});
+
+$(document).on('click','.delete',function(e){
+        e.preventDefault();
+        var gr = jQuery("#grid1").jqGrid('getGridParam','selrow');
+        var cellValue = jQuery("#grid1").jqGrid ('getCell', gr, 'location_id');
+        if(cellValue )
+        {
+            swal({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                type: 'warning',
+                showCancelButton: !0,
+                confirmButtonColor: '#DD6B55',
+                confirmButtonText: 'Yes',
+                cancelButtonText: 'No',
+            }, function(e) {
+                 if(e == true)
+                 {
+                    $.get('locationdelete/'+cellValue, function(data,status)
+                    {
+                        // var data = $.trim(data);
+                        alert(data);
+                        if(data =='0')
+                        {
+                            notyMsg('success','Deleted Successfully');
+                            setTimeout(function(){
+                            $("#grid1")[0].triggerToolbar();
+                            }, 1500);
+                        }
+                        if(data =='2')
+                        {
+                            notyMsg('error',"You Cant't delete  Used in SomeWhere");
+                            setTimeout(function(){
+                            $("#grid1")[0].triggerToolbar();
+                            }, 1500);
+                        }
+                        if(data =='3')
+                        {
+                            notyMsg('error',"Something Went Wrong!!");
+                            setTimeout(function(){
+                            $("#grid1")[0].triggerToolbar();
+                            }, 1500);
+                        }
+                    });
+                }
+                else{
+                  $('.apply').css('display','none');
+                  swal("Cancelled");
+                }
+            })
+             $('.apply').css('display','none');
+        }
+        else
+        {
+           notyMsg("info","Please Select a Row");
+        }
+   });
+	
+
+	
+	
+	
+	
+$(window).on('load',function(){
+       //preloader
+       var preLoder = $("#preloader");
+       preLoder.fadeOut(500);
+       var backtoTop = $('.back-to-top')
+       backtoTop.fadeOut(100);
+   });
+
+
+$(".edit,.clear").click(function(){
+var form=$("#location_form");
+   form.parsley().destroy();
+
+ });
+
+
+
+</script>
+
+
+@include('layouts.php_js_validation')
+@endsection

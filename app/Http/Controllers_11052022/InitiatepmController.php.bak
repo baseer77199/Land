@@ -1,0 +1,1315 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\initiatepm;
+use App\Monthlycheck;
+use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent;
+use Illuminate\Database\Query\Builder;
+use Illuminate\Notifications\Notifiable;
+use DB;
+use Schema;
+class InitiatepmController  extends Controller
+{
+public function __construct()
+    {
+        $this->data=array();
+        $this->model    = new initiatepm();
+        $this->data['pageMethod']=\Request::route()->getName();
+        $this->data['pageFormtype']='ajax';
+        $this->data['pageModule']='initiatepm';
+        $this->table="machine_pm_detail_t";   
+        $this->table1="pm_monthly_checking_tbl";
+        $this->middleware('auth');
+         $this->model=new Monthlycheck;
+        $this->data['urlmenu']=$this->indexs(); 
+    }
+    public function index()
+    {
+        $this->data['pageMethod']="initiatepm";
+        return view('initiatepm.table',$this->data);
+    }
+     public function pmclearanceindex()
+    {
+      
+        return view('initiatepm.pmclearancetable',$this->data);
+    }
+        public function pmagencyallocationindex()
+    {
+        $this->data['pageMethod']="pmagencyallocation";
+        return view('initiatepm.agencytable',$this->data);
+    }
+        public function pmmonthlycheckindex()
+    {
+        return view('initiatepm.pmmonthtable',$this->data);
+    }
+   
+/*Purcpose for pm Initiate grid*/    
+    public function initiatepmData()   
+    {
+         
+        $wh='';
+    if($_GET['_search']=='true')
+    {
+        $table=array("tb_users","machine_hdr_t","machine_pm_detail_t");
+            $wh=$this->jqgridsearch('ma_department_t',$_GET['filters'],$table);
+    }
+        
+ 
+    $page = $_GET['page'];
+    $limit = $_GET['rows'];
+    $sidx = $_GET['sidx'];
+    $sord = $_GET['sord'];
+        $loc=\Session::get('location');
+        $compy=\Session::get('companyid');   
+        
+        $groupname=\Session::get('groupname');
+                $wh1='';
+                $wh1='and  machine_hdr_t.location_id='.$loc;      
+
+//        if($groupname=='Superadmin' || $groupname=='Admin'){
+//        $wh.='and  machine_pm_detail_t.company_id='.$compy;  
+//        }else{
+//            $wh.='and  machine_pm_detail_t.company_id='.$compy.' and machine_pm_detail_t.location_id='.$loc;      
+//        }   
+    if(!$sidx) $sidx =1;
+
+$result = \DB::select("SELECT COUNT(machine_pm_detail_t.initiate_pm_id) AS count FROM machine_pm_detail_t left join tb_users on(tb_users.id=machine_pm_detail_t.created_by) left join machine_hdr_t on(machine_hdr_t.machine_id=machine_pm_detail_t.machine_id) left join ma_department_t on(ma_department_t.department_id=machine_pm_detail_t.department_id) where 1=1  and machine_pm_detail_t.initiate_status=0 $wh order by machine_pm_detail_t.actual_pm_date asc ");
+    $count = $result[0]->count;
+    if( $count > 0 && $limit > 0)
+        {
+            $total_pages = ceil($count/$limit);
+    }
+        else
+        {
+            $total_pages = 0;
+    }
+
+    if ($page > $total_pages) $page=$total_pages;
+    $start = $limit*$page - $limit;
+    if($start <0) $start = 0;
+        
+        $sql="SELECT machine_pm_detail_t.*,tb_users.username,machine_hdr_t.machine_name,machine_hdr_t.location_id,
+        ma_department_t.department_name from machine_pm_detail_t left join tb_users on(tb_users.id=machine_pm_detail_t.created_by) left join machine_hdr_t on(machine_hdr_t.machine_id=machine_pm_detail_t.machine_id) left join ma_department_t on(ma_department_t.department_id=machine_pm_detail_t.department_id) where 1=1 $wh1 $wh and machine_pm_detail_t.initiate_status=0 order by machine_pm_detail_t.actual_pm_date asc LIMIT $start , $limit";
+        $download_SQL="SELECT machine_pm_detail_t.*,tb_users.username,machine_hdr_t.machine_name,ma_department_t.department_name from machine_pm_detail_t left join tb_users on(tb_users.id=machine_pm_detail_t.created_by)  left join machine_hdr_t on(machine_hdr_t.machine_id=machine_pm_detail_t.machine_id) left join ma_department_t on(ma_department_t.department_id=machine_pm_detail_t.department_id) where 1=1 and machine_pm_detail_t.initiate_status=0 $wh1 $wh order by machine_pm_detail_t.actual_pm_date asc "; 
+        $result1 = \DB::select( $download_SQL );
+        $result1=collect($result1)->map(function($x){ return (array) $x; })->toArray();
+    if(isset($_GET['download']))
+    {
+        return $result1;
+    }
+
+        $result = \DB::select($sql);
+        
+    $responce->rows[]='';
+    $responce->rows=$result;
+    $responce->page = $page;
+    $responce->total = $total_pages;
+    $responce->records = $count;
+
+    echo json_encode($responce);
+    }
+    /*end*/
+/*Purcpose for pm clearance grid*/    
+public function pmclearanceData()   
+{
+        $wh='';
+    if($_GET['_search']=='true')
+    {
+        $table=array("tb_users","machine_hdr_t","machine_pm_detail_t");
+            $wh=$this->jqgridsearch('ma_department_t',$_GET['filters'],$table);
+    }
+        
+ 
+    $page = $_GET['page'];
+    $limit = $_GET['rows'];
+    $sidx = $_GET['sidx'];
+    $sord = $_GET['sord'];
+        $loc=\Session::get('location');
+        $compy=\Session::get('companyid');   
+        $u_id=\Session::get('id');  
+         $wh1='';
+         $wh1='and  machine_hdr_t.location_id='.$loc;      
+ 
+             $ini_pm_id=[];
+             $pm_id='';
+             $res=\DB::select("SELECT * FROM machine_pm_detail_t where  machine_pm_detail_t.status=0 and machine_pm_detail_t.initiate_status=1");
+                if(count($res)>0){
+                foreach($res as $k1=>$v1){                    
+                 $clearance_to=json_decode($v1->user_clearance_by,true); 
+                 $initiate_pm_id=$v1->initiate_pm_id;
+                 
+                 if (in_array($u_id,$clearance_to)){
+                    array_push($ini_pm_id,$initiate_pm_id);
+                    } 
+                }
+                     $pm_id=implode(",",$ini_pm_id);
+                }
+              //  dd($pm_id);
+        $groupname=\Session::get('groupname');
+//        if($groupname=='Superadmin' || $groupname=='Admin'){
+//        $wh.='and  machine_pm_detail_t.company_id='.$compy;  
+//        }else{
+//            $wh.='and  machine_pm_detail_t.company_id='.$compy.' and machine_pm_detail_t.location_id='.$loc;      
+//        }   
+//echo ("SELECT COUNT(machine_pm_detail_t.initiate_pm_id) AS count FROM machine_pm_detail_t left join tb_users on(tb_users.id=machine_pm_detail_t.created_by) left join machine_hdr_t on(machine_hdr_t.machine_id=machine_pm_detail_t.machine_id) left join ma_department_t on(ma_department_t.department_id=machine_pm_detail_t.department_id) where 1=1 and  machine_pm_detail_t.initiate_pm_id in ($pm_id) and machine_pm_detail_t.status=0 and machine_pm_detail_t.initiate_status=1 $wh");
+    if(!$sidx) $sidx =1;
+ if($pm_id != "") {
+$result = \DB::select("SELECT COUNT(machine_pm_detail_t.initiate_pm_id) AS count FROM machine_pm_detail_t left join tb_users on(tb_users.id=machine_pm_detail_t.created_by) left join machine_hdr_t on(machine_hdr_t.machine_id=machine_pm_detail_t.machine_id) left join ma_department_t on(ma_department_t.department_id=machine_pm_detail_t.department_id) where 1=1 and  machine_pm_detail_t.initiate_pm_id in ($pm_id) and machine_pm_detail_t.status=0 and machine_pm_detail_t.initiate_status=1 $wh $wh1");
+ }  else{
+     $result=[];
+ }
+ if(count($result)>0){
+$count = $result[0]->count;
+ }
+ else{
+   $count = 0;  
+ }
+    if( $count > 0 && $limit > 0)
+        {
+            $total_pages = ceil($count/$limit);
+    }
+        else
+        {
+            $total_pages = 0;
+    }
+
+    if ($page > $total_pages) $page=$total_pages;
+    $start = $limit*$page - $limit;
+    if($start <0) $start = 0;
+         if($pm_id != "") {
+        $sql="SELECT machine_pm_detail_t.*,tb_users.username,machine_hdr_t.machine_name,ma_department_t.department_name from machine_pm_detail_t left join tb_users on(tb_users.id=machine_pm_detail_t.created_by) left join machine_hdr_t on(machine_hdr_t.machine_id=machine_pm_detail_t.machine_id) left join ma_department_t on(ma_department_t.department_id=machine_pm_detail_t.department_id) where 1=1 and  machine_pm_detail_t.initiate_pm_id in ($pm_id) and machine_pm_detail_t.status=0 and machine_pm_detail_t.initiate_status=1 $wh $wh1 ORDER BY $sidx $sord LIMIT $start , $limit";
+        $download_SQL="SELECT machine_pm_detail_t.*,tb_users.username,machine_hdr_t.machine_name,ma_department_t.department_name from machine_pm_detail_t left join tb_users on(tb_users.id=machine_pm_detail_t.created_by) left join machine_hdr_t on(machine_hdr_t.machine_id=machine_pm_detail_t.machine_id) left join ma_department_t on(ma_department_t.department_id=machine_pm_detail_t.department_id) where 1=1 and  machine_pm_detail_t.initiate_pm_id in ($pm_id) and machine_pm_detail_t.status=0 and machine_pm_detail_t.initiate_status=1 $wh $wh1 ORDER BY $sidx $sord"; 
+       $result1 = \DB::select( $download_SQL );
+        $result = \DB::select($sql);
+       
+         }else{
+             $result1=[];
+             $result=[];
+         }
+         
+         if(count($result)>0){
+        foreach($result as $k=>$v){
+           $clear_by= ($v->user_clearance_by);
+           $clearance_by=json_decode($clear_by);
+           
+           
+           $clearance='';
+           if($clearance_by!=null){
+           foreach($clearance_by as $key=>$value){
+               $clearance.=$value.",";
+              
+           }
+            
+            $clearanceby=rtrim($clearance,',');
+            $cleardata=explode(",",$clearanceby);
+//            dd($cleardata);
+           $clearance_name=\DB::table('tb_users')->whereIn('id',$cleardata)->get();
+           $first_name='';
+           foreach ($clearance_name as $c=>$cv){
+               $first_name.=$cv->first_name.",";
+                 
+           }
+          $name=rtrim($first_name,',');
+          $result[$k]->user_clearance_by=$name;
+           }
+            }
+       }
+         
+       
+    if(isset($_GET['download']))
+    {
+        if(count($result1)>0){
+        foreach($result1 as $k=>$v){
+           $clear_by= ($v->user_clearance_by);
+           $clearance_by=json_decode($clear_by);
+           
+           
+           $clearance='';
+           if($clearance_by!=null){
+           foreach($clearance_by as $key=>$value){
+               $clearance.=$value.",";
+              
+           }
+            
+            $clearanceby=rtrim($clearance,',');
+            $cleardata=explode(",",$clearanceby);
+//            dd($cleardata);
+           $clearance_name=\DB::table('tb_users')->whereIn('id',$cleardata)->get();
+           $first_name='';
+           foreach ($clearance_name as $c=>$cv){
+               $first_name.=$cv->first_name.",";
+                 
+           }
+          $name=rtrim($first_name,',');
+          $result1[$k]->user_clearance_by=$name;
+           }
+            }
+       }
+         $result1=collect($result1)->map(function($x){ return (array) $x; })->toArray();
+        return $result1;
+    }
+
+//        dd($result);
+    $responce->rows[]='';
+    $responce->rows=$result;
+    $responce->page = $page;
+    $responce->total = $total_pages;
+    $responce->records = $count;
+
+    echo json_encode($responce);
+    }
+    /*end*/
+    /*Purcpose for agency allocation grid*/    
+public function pmmonthlycheckData()   
+{
+        $wh='';
+    if($_GET['_search']=='true')
+    {
+        $table=array("tb_users","machine_hdr_t","machine_pm_detail_t");
+            $wh=$this->jqgridsearch('ma_department_t',$_GET['filters'],$table);
+    }
+        
+ 
+    $page = $_GET['page'];
+    $limit = $_GET['rows'];
+    $sidx = $_GET['sidx'];
+    $sord = $_GET['sord'];
+        $loc=\Session::get('location');
+        $compy=\Session::get('companyid');   
+        
+        $groupname=\Session::get('groupname');
+
+          $wh1='';
+
+    $wh1='and  machine_hdr_t.location_id='.$loc; 
+    if(!$sidx) $sidx =1;
+
+$result = \DB::select("SELECT COUNT(machine_pm_detail_t.initiate_pm_id) AS count FROM machine_pm_detail_t left join tb_users on(tb_users.id=machine_pm_detail_t.created_by) left join machine_hdr_t on(machine_hdr_t.machine_id=machine_pm_detail_t.machine_id) left join ma_department_t on(ma_department_t.department_id=machine_pm_detail_t.department_id) where 1=1 and machine_pm_detail_t.status=2 $wh $wh1");
+    $count = $result[0]->count;
+    if( $count > 0 && $limit > 0)
+        {
+            $total_pages = ceil($count/$limit);
+    }
+        else
+        {
+            $total_pages = 0;
+    }
+
+    if ($page > $total_pages) $page=$total_pages;
+    $start = $limit*$page - $limit;
+    if($start <0) $start = 0;
+        
+        $sql="SELECT machine_pm_detail_t.actual_pm_date,machine_pm_detail_t.user_clearance_by,machine_pm_detail_t.initiate_pm_id,machine_pm_detail_t.pm_no,tb_users.username,machine_hdr_t.machine_name,ma_department_t.department_name,0 as pm_checking_id from machine_pm_detail_t left join tb_users on(tb_users.id=machine_pm_detail_t.created_by) left join machine_hdr_t on(machine_hdr_t.machine_id=machine_pm_detail_t.machine_id) left join ma_department_t on(ma_department_t.department_id=machine_pm_detail_t.department_id) where 1=1 and machine_pm_detail_t.status=2 $wh $wh1 ORDER BY $sidx $sord LIMIT $start , $limit";
+
+        $download_SQL="SELECT machine_pm_detail_t.actual_pm_date,tb_users.username,machine_pm_detail_t.initiate_pm_id,machine_hdr_t.machine_name,machine_pm_detail_t.pm_no,ma_department_t.department_name,0 as pm_checking_id from machine_pm_detail_t left join tb_users on(tb_users.id=machine_pm_detail_t.created_by) left join machine_hdr_t on(machine_hdr_t.machine_id=machine_pm_detail_t.machine_id) left join ma_department_t on(ma_department_t.department_id=machine_pm_detail_t.department_id) where 1=1 and machine_pm_detail_t.status=2 $wh $wh1 ORDER BY $sidx $sord "; 
+        $result1 = \DB::select( $download_SQL );
+        $result1=collect($result1)->map(function($x){ return (array) $x; })->toArray();
+    if(isset($_GET['download']))
+    {
+        return $result1;
+    }
+
+        $result = \DB::select($sql);
+       
+       
+        foreach($result as $k=>$v){
+           $clear_by= ($v->user_clearance_by);
+           $clearance_by=json_decode($clear_by);
+           
+           
+           $clearance='';
+           if($clearance_by!=null){
+           foreach($clearance_by as $key=>$value){
+               $clearance.=$value.",";
+              
+           }
+            
+            $clearanceby=rtrim($clearance,',');
+            $cleardata=explode(",",$clearanceby);
+//            dd($cleardata);
+           $clearance_name=\DB::table('tb_users')->whereIn('id',$cleardata)->get();
+           $first_name='';
+           foreach ($clearance_name as $c=>$cv){
+               $first_name.=$cv->first_name.",";
+                 
+           }
+          $name=rtrim($first_name,',');
+          $result[$k]->user_clearance_by=$name;
+           }
+            }
+     
+//        dd($result);
+    $responce->rows[]='';
+    $responce->rows=$result;
+    $responce->page = $page;
+    $responce->total = $total_pages;
+    $responce->records = $count;
+
+    echo json_encode($responce);
+    }
+    /*end*/
+	/*deepika purpose:pmchecklist approval*/
+	public function pmmonthlycheckapprovalData()   
+{
+        $wh='';
+    if($_GET['_search']=='true')
+    {
+        $table=array("ma_department_t","machine_pm_detail_t");
+            $wh=$this->jqgridsearch('pm_monthly_checking_tbl',$_GET['filters'],$table);
+    }
+        
+ 
+    $page = $_GET['page'];
+    $limit = $_GET['rows'];
+    $sidx = $_GET['sidx'];
+    $sord = $_GET['sord'];
+        $loc=\Session::get('location_id');
+        $compy=\Session::get('companyid');   
+        
+        $groupname=\Session::get('groupname');
+//        if($groupname=='Superadmin' || $groupname=='Admin'){
+//        $wh.='and  machine_pm_detail_t.company_id='.$compy;  
+//        }else{
+//            $wh.='and  machine_pm_detail_t.company_id='.$compy.' and machine_pm_detail_t.location_id='.$loc;      
+//        }   
+    if(!$sidx) $sidx =1;
+
+$result = \DB::select("SELECT COUNT(pm_monthly_checking_tbl.initate_pm_id) AS count FROM pm_monthly_checking_tbl left join machine_pm_detail_t on(machine_pm_detail_t.initiate_pm_id=pm_monthly_checking_tbl.initate_pm_id) left join machine_hdr_t on(machine_hdr_t.machine_id=machine_pm_detail_t.machine_id) left join ma_department_t on(ma_department_t.department_id=machine_pm_detail_t.department_id) where 1=1 and pm_monthly_checking_tbl.approval_status!='APPROVED' $wh");
+    $count = $result[0]->count;
+    if( $count > 0 && $limit > 0)
+        {
+            $total_pages = ceil($count/$limit);
+    }
+        else
+        {
+            $total_pages = 0;
+    }
+
+    if ($page > $total_pages) $page=$total_pages;
+    $start = $limit*$page - $limit;
+    if($start <0) $start = 0;
+        
+        $sql="SELECT * from pm_monthly_checking_tbl left join machine_pm_detail_t on(machine_pm_detail_t.initiate_pm_id=pm_monthly_checking_tbl.initate_pm_id) left join machine_hdr_t on(machine_hdr_t.machine_id=machine_pm_detail_t.machine_id) left join ma_department_t on(ma_department_t.department_id=machine_pm_detail_t.department_id) where 1=1 and pm_monthly_checking_tbl.approval_status!='APPROVED' $wh ORDER BY $sidx $sord LIMIT $start , $limit";
+
+        $download_SQL="SELECT * from pm_monthly_checking_tbl left join machine_pm_detail_t on(machine_pm_detail_t.initiate_pm_id=pm_monthly_checking_tbl.initate_pm_id) left join machine_hdr_t on(machine_hdr_t.machine_id=machine_pm_detail_t.machine_id) left join ma_department_t on(ma_department_t.department_id=machine_pm_detail_t.department_id) where 1=1 and pm_monthly_checking_tbl.approval_status!='APPROVED' $wh ORDER BY $sidx $sord"; 
+        $result1 = \DB::select( $download_SQL );
+        $result1=collect($result1)->map(function($x){ return (array) $x; })->toArray();
+    if(isset($_GET['download']))
+    {
+        return $result1;
+    }
+
+        $result = \DB::select($sql);
+       
+       
+        foreach($result as $k=>$v){
+           $clear_by= ($v->user_clearance_by);
+           $clearance_by=json_decode($clear_by);
+           
+           
+           $clearance='';
+           if($clearance_by!=null){
+           foreach($clearance_by as $key=>$value){
+               $clearance.=$value.",";
+              
+           }
+            
+            $clearanceby=rtrim($clearance,',');
+            $cleardata=explode(",",$clearanceby);
+           $clearance_name=\DB::table('tb_users')->whereIn('id',$cleardata)->get();
+           $first_name='';
+           foreach ($clearance_name as $c=>$cv){
+               $first_name.=$cv->first_name.",";
+                 
+           }
+          $name=rtrim($first_name,',');
+          $result[$k]->user_clearance_by=$name;
+           }
+            }
+    $responce->rows[]='';
+    $responce->rows=$result;
+    $responce->page = $page;
+    $responce->total = $total_pages;
+    $responce->records = $count;
+
+    echo json_encode($responce);
+    }
+/*end*/
+     /*Purcpose for MONTHLY CHECK grid*/    
+public function pmagencyallocationData()   
+{
+        $wh='';
+    if($_GET['_search']=='true')
+    {
+        $table=array("tb_users","machine_hdr_t","machine_pm_detail_t");
+            $wh=$this->jqgridsearch('ma_department_t',$_GET['filters'],$table);
+    }
+        
+ 
+    $page = $_GET['page'];
+    $limit = $_GET['rows'];
+    $sidx = $_GET['sidx'];
+    $sord = $_GET['sord'];
+        $loc=\Session::get('location');
+        $compy=\Session::get('companyid');   
+        
+        $groupname=\Session::get('groupname');
+
+  $wh1='';
+  $wh1='and  machine_hdr_t.location_id='.$loc;  
+
+
+//        if($groupname=='Superadmin' || $groupname=='Admin'){
+//        $wh.='and  machine_pm_detail_t.company_id='.$compy;  
+//        }else{
+//            $wh.='and  machine_pm_detail_t.company_id='.$compy.' and machine_pm_detail_t.location_id='.$loc;      
+//        }   
+    if(!$sidx) $sidx =1;
+
+$result = \DB::select("SELECT COUNT(machine_pm_detail_t.initiate_pm_id) AS count FROM machine_pm_detail_t left join tb_users on(tb_users.id=machine_pm_detail_t.created_by) left join machine_hdr_t on(machine_hdr_t.machine_id=machine_pm_detail_t.machine_id) left join ma_department_t on(ma_department_t.department_id=machine_pm_detail_t.department_id) where 1=1 and machine_pm_detail_t.status=1 $wh $wh1");
+    $count = $result[0]->count;
+    if( $count > 0 && $limit > 0)
+        {
+            $total_pages = ceil($count/$limit);
+    }
+        else
+        {
+            $total_pages = 0;
+    }
+
+    if ($page > $total_pages) $page=$total_pages;
+    $start = $limit*$page - $limit;
+    if($start <0) $start = 0;
+        
+        $sql="SELECT machine_pm_detail_t.*,tb_users.username,machine_hdr_t.machine_name,ma_department_t.department_name from machine_pm_detail_t left join tb_users on(tb_users.id=machine_pm_detail_t.created_by) left join machine_hdr_t on(machine_hdr_t.machine_id=machine_pm_detail_t.machine_id) left join ma_department_t on(ma_department_t.department_id=machine_pm_detail_t.department_id) where 1=1 and machine_pm_detail_t.status=1 $wh $wh1 ORDER BY $sidx $sord LIMIT $start , $limit";
+        $download_SQL="SELECT machine_pm_detail_t.*,tb_users.username,machine_hdr_t.machine_name,ma_department_t.department_name from machine_pm_detail_t left join tb_users on(tb_users.id=machine_pm_detail_t.created_by)  left join machine_hdr_t on(machine_hdr_t.machine_id=machine_pm_detail_t.machine_id) left join ma_department_t on(ma_department_t.department_id=machine_pm_detail_t.department_id) where 1=1  and machine_pm_detail_t.status=1 $wh $wh1 ORDER BY $sidx $sord "; 
+        $result1 = \DB::select( $download_SQL );
+        $result1=collect($result1)->map(function($x){ return (array) $x; })->toArray();
+    if(isset($_GET['download']))
+    {
+        return $result1;
+    }
+
+        $result = \DB::select($sql);
+       
+       
+        foreach($result as $k=>$v){
+           $clear_by= ($v->user_clearance_by);
+           $clearance_by=json_decode($clear_by);
+           
+           
+           $clearance='';
+           if($clearance_by!=null){
+           foreach($clearance_by as $key=>$value){
+               $clearance.=$value.",";
+              
+           }
+            
+            $clearanceby=rtrim($clearance,',');
+            $cleardata=explode(",",$clearanceby);
+//            dd($cleardata);
+           $clearance_name=\DB::table('tb_users')->whereIn('id',$cleardata)->get();
+           $first_name='';
+           foreach ($clearance_name as $c=>$cv){
+               $first_name.=$cv->first_name.",";
+                 
+           }
+          $name=rtrim($first_name,',');
+          $result[$k]->user_clearance_by=$name;
+           }
+            }
+     
+//        dd($result);
+    $responce->rows[]='';
+    $responce->rows=$result;
+    $responce->page = $page;
+    $responce->total = $total_pages;
+    $responce->records = $count;
+
+    echo json_encode($responce);
+    }
+    /*end*/
+     public function show($id=null)
+    {
+        if(isset($_POST['id']))    
+    $id=$_POST['id'];  
+     if(!is_numeric($id)){
+        return \Redirect::back()->withErrors(['msg' => 'The Message']);
+    }else{
+      $header = \DB::table('machine_pm_detail_t')
+    ->leftjoin('ma_department_t','ma_department_t.department_id','=','machine_pm_detail_t.department_id')
+    	->leftjoin('machine_hdr_t','machine_hdr_t.machine_id','=','machine_pm_detail_t.machine_id')
+    	 ->leftjoin('frequency_tbl','frequency_tbl.frequency_name','=','machine_pm_detail_t.frequency_id')
+    	->select('machine_pm_detail_t.user_clearance_by','machine_pm_detail_t.actual_pm_date','machine_pm_detail_t.initiate_date','machine_pm_detail_t.pm_no','machine_hdr_t.asset_code','machine_hdr_t.machine_no','machine_hdr_t.machine_name','ma_department_t.department_name','frequency_tbl.frequency_name')->where('initiate_pm_id',$id)->get();
+			$this->data['header'] = $header[0];
+                        $select=json_decode($header[0]->user_clearance_by);
+                        $name='';
+                       foreach($select as $key=>$value){
+			$user=\DB::SELECT("select employee_number,first_name from  tb_users  where id=".$value);
+                        $name.=$user[0]->employee_number."-".$user[0]->first_name.",";
+                       }
+                       $name=rtrim($name,',');
+                       $this->data['user']=$name;
+		return view("initiatepm.view1",$this->data);
+    }
+    }
+     public function create($id=null)
+    {
+        if(isset($_POST['id']))    
+    $id=$_POST['id']; 
+      if(!is_numeric($id)){
+        return \Redirect::back()->withErrors(['msg' => 'The Message']);
+    }else{
+     
+        $row= DB::getSchemaBuilder()->getColumnListing('machine_pm_detail_t');
+        $this->data['row']=$row;
+       $pm=\DB::table('machine_pm_detail_t')->where('initiate_pm_id',$id)->get();
+       $this->data['initiate_pm_id']=$pm[0]->initiate_pm_id;
+       $this->data['pm_no']=$pm[0]->pm_no;
+       $this->data['actual_pm_date']=$pm[0]->actual_pm_date;
+       $this->data['initiate_date']='';
+        $this->data['machine_id'] = $this->jCombologin('machine_hdr_t', 'machine_id', 'asset_code|machine_name', $pm[0]->machine_id);      
+        $this->data['machine_number'] = $this->jCombologin('machine_hdr_t', 'machine_id', 'machine_no', $pm[0]->machine_id);      
+        $this->data['department_id'] = $this->jCombologin('ma_department_t', 'department_id', 'department_name', $pm[0]->department_id);      
+        $this->data['user_clearance_by'] = $this->jCombologin('tb_users', 'id', 'employee_number|first_name','');     
+    }
+//        dd($this->data);
+        return view('initiatepm.form',$this->data);
+    }
+      public function edit($id=null)
+    {
+        if(isset($_POST['id']))    
+    $id=$_POST['id'];  
+      if(!is_numeric($id)){
+        return \Redirect::back()->withErrors(['msg' => 'The Message']);
+    }else{
+        $row= DB::getSchemaBuilder()->getColumnListing('machine_pm_detail_t');
+        $this->data['row']=$row;
+       $pm=\DB::table('machine_pm_detail_t')->where('initiate_pm_id',$id)->get();
+       $this->data['initiate_pm_id']=$pm[0]->initiate_pm_id;
+       $this->data['pm_no']=$pm[0]->pm_no;
+       $this->data['actual_pm_date']=$pm[0]->actual_pm_date;
+       $this->data['initiate_date']=date('d-m-Y',strtotime($pm[0]->initiate_date));
+        $this->data['machine_id'] = $this->jCombologin('machine_hdr_t', 'machine_id', 'asset_code|machine_name', $pm[0]->machine_id);      
+        $this->data['machine_number'] = $this->jCombologin('machine_hdr_t', 'machine_id', 'machine_no', $pm[0]->machine_id);      
+        $this->data['department_id'] = $this->jCombologin('ma_department_t', 'department_id', 'department_name', $pm[0]->department_id);
+     //   print_r(json_decode($pm[0]->user_clearance_by));
+       // exit;
+        $this->data['user_clearance_by'] = $this->jCombologinnew('tb_users', 'id', 'employee_number|first_name',$pm[0]->user_clearance_by);    
+    }
+//        dd($this->data);
+        return view('initiatepm.form',$this->data);
+    }
+    public function jCombologinnew($table,$option,$display,$selects)
+{
+
+    $display_name=explode("|",$display);
+    $dis="";
+
+    foreach($display_name as $value)
+    {
+        $dis.=$value.","."' - ', ";
+    }
+    
+    $dis_name=rtrim($dis,",' - ',");   
+        $select=\DB::select("select DISTINCT CONCAT(".$dis_name.") as name ,".$option." from ".$table );
+
+    $html="<option value=''>-- Please Select --</option>";
+$selects=json_decode($selects);
+
+    foreach($select as $val)
+    {
+        if(in_array($val->$option,$selects))
+        {
+            $html.= "<option value='".$val->$option."' selected='selected'>".$val->name."</option>";
+        }
+        else
+        {
+            $html.= "<option value='".$val->$option."'>".$val->name."</option>";
+        }
+    }
+
+    return $html;
+}
+       public function pmclearancecreate($id=null)
+    {
+        if(isset($_POST['id']))    
+    $id=$_POST['id'];  
+     if(!is_numeric($id)){
+        return \Redirect::back()->withErrors(['msg' => 'The Message']);
+    }else{
+        
+        $row= DB::getSchemaBuilder()->getColumnListing('machine_pm_detail_t');
+        $this->data['row']=$row;
+       $pm=\DB::table('machine_pm_detail_t')->where('initiate_pm_id',$id)->get();
+       $this->data['initiate_pm_id']=$pm[0]->initiate_pm_id;
+       $this->data['pm_no']=$pm[0]->pm_no;
+       $this->data['initiate_date']=$pm[0]->initiate_date;
+        $this->data['machine_id'] = $this->jCombologin('machine_hdr_t', 'machine_id', 'asset_code|machine_name', $pm[0]->machine_id);      
+        $this->data['machine_number'] = $this->jCombologin('machine_hdr_t', 'machine_id', 'machine_no', $pm[0]->machine_id);      
+        $this->data['department_id'] = $this->jCombologin('ma_department_t', 'department_id', 'department_name', $pm[0]->department_id);      
+        $user_clear=json_decode($pm[0]->user_clearance_by);
+        $user_clear_id="";
+        foreach($user_clear as $k=>$v){
+           $user_clear_id.=$v.","; 
+        }
+        $user_clearance_by=rtrim($user_clear_id,",");
+        
+        $this->data['user_clearance_by'] = $this->jcustommultiselect('tb_users', 'id', 'employee_number|first_name',$user_clearance_by,'and id in ('.$user_clearance_by.')');      
+    }
+        return view('initiatepm.pmclearanceform',$this->data);
+    }
+      public function pmagencyallocationcreate($id=null)
+    {
+        if(isset($_POST['id']))    
+    $id=$_POST['id'];  
+       if(!is_numeric($id)){
+        return \Redirect::back()->withErrors(['msg' => 'The Message']);
+    }else{
+        $row= DB::getSchemaBuilder()->getColumnListing('machine_pm_detail_t');
+        $this->data['row']=$row;
+       $pm=\DB::table('machine_pm_detail_t')->where('initiate_pm_id',$id)->get();
+       $this->data['initiate_pm_id']=$pm[0]->initiate_pm_id;
+       $this->data['pm_no']=$pm[0]->pm_no;
+       $this->data['initiate_date']=$pm[0]->initiate_date;
+       $this->data['change_date']=$pm[0]->change_date;
+       $this->data['shift_timing']=$pm[0]->shift_timing;
+       $this->data['postponed_date']=$pm[0]->postponed_date;
+        $this->data['machine_id'] = $this->jCombologin('machine_hdr_t', 'machine_id', 'asset_code|machine_name', $pm[0]->machine_id);      
+        $this->data['machine_number'] = $this->jCombologin('machine_hdr_t', 'machine_id', 'machine_no', $pm[0]->machine_id);      
+        $this->data['agency_allocation'] = $this->jCombologin('ma_agency_t', 'agency_id', 'agency_name', '');      
+        $this->data['department_id'] = $this->jCombologin('ma_department_t', 'department_id', 'department_name', $pm[0]->department_id);      
+        $user_clear=json_decode($pm[0]->user_clearance_by);
+        $user_clear_id="";
+        foreach($user_clear as $k=>$v){
+           $user_clear_id.=$v.","; 
+        }
+        $user_clearance_by=rtrim($user_clear_id,",");
+        
+        $this->data['user_clearance_by'] = $this->jcustommultiselect('tb_users', 'id', 'employee_number|first_name',$user_clearance_by,'and id in ('.$user_clearance_by.')');      
+    }
+        return view('initiatepm.agencyallocationform',$this->data);
+    }
+     public function pmmonthlycheckcreate($id=null)
+    {
+        if(isset($_POST['id']))    
+    $id=$_POST['id'];
+     if(!is_numeric($id)){
+        return \Redirect::back()->withErrors(['msg' => 'The Message']);
+    }else{
+		 if(isset($_GET['source'])){
+			if($_GET['source']=="approve"){
+			$pmcheck=\DB::table('pm_monthly_checking_tbl')->where('pm_checking_id',$id)->get();
+			$this->data['row']=$pmcheck;	
+				 $pm=\DB::table('machine_pm_detail_t')->where('initiate_pm_id',$pmcheck[0]->initate_pm_id)->get();
+       $this->data['initiate_pm_id']=$pmcheck[0]->initate_pm_id;
+       $this->data['pm_no']=$pm[0]->pm_no;
+				 $this->data['pm_checking_id']=$pmcheck[0]->pm_checking_id;
+       $this->data['initiate_date']=$pm[0]->initiate_date;
+       $this->data['change_date']=$pm[0]->change_date;
+       $this->data['shift_timing']=$pm[0]->shift_timing;
+       $this->data['postponed_date']=$pm[0]->postponed_date;
+        $this->data['machine_id'] = $this->jCombologin('machine_hdr_t', 'machine_id', 'asset_code|machine_name', $pmcheck[0]->machine_id);      
+        $this->data['machine_number'] = $this->jCombologin('machine_hdr_t', 'machine_id', 'machine_no', $pmcheck[0]->machine_id);      
+        $this->data['agency_allocation'] = $this->jCombologin('ma_agency_t', 'agency_id', 'agency_name', $pm[0]->allocated_agency);      
+        $this->data['department_id'] = $this->jCombologin('ma_department_t', 'department_id', 'department_name', $pmcheck[0]->department_id);      
+        $user_clear=json_decode($pm[0]->user_clearance_by);
+        $user_clear_id="";
+				if($user_clear!=null){
+        foreach($user_clear as $k=>$v){
+           $user_clear_id.=$v.","; 
+        }
+        $user_clearance_by=rtrim($user_clear_id,",");
+					 $this->data['user_clearance_by'] = $this->jcustommultiselect('tb_users', 'id', 'employee_number|first_name',$user_clearance_by,'and id in ('.$user_clearance_by.')');      
+				}else{
+			$user_clearance_by="";	
+					 $this->data['user_clearance_by'] = $this->jcustommultiselect('tb_users', 'id', 'employee_number|first_name',$user_clearance_by,'');      
+				}
+       
+          $this->data['check_details']=$checkdetails=\DB::select("SELECT checklist_tbl.checklist_id,checklist_tbl.terms,checklist_tbl.file,checklist_tbl.checklist_name from m_checklist_hrd_tbl left join checklist_lines_tbl on checklist_lines_tbl.checklist_hrd_id=m_checklist_hrd_tbl.checklist_hrd_id left join checklist_tbl on checklist_tbl.checklist_id=checklist_lines_tbl.checklist_id where m_checklist_hrd_tbl.machine_id='".$pmcheck[0]->machine_id."' and m_checklist_hrd_tbl.department_id='".$pmcheck[0]->department_id."' and m_checklist_hrd_tbl.frequency_id='".$pm[0]->frequency_id."'");
+        $observation=json_decode($pmcheck[0]->observation);
+        $status=json_decode($pmcheck[0]->status);
+        $remarks=json_decode($pmcheck[0]->remarks);
+		$this->data['pagemode']="edit";
+				foreach($checkdetails as $key=>$values){
+					if(isset($observation[$key])){
+				 $this->data['check_details'][$key]->observation=$observation[$key];
+					}else{
+					$this->data['check_details'][$key]->observation="";	
+					}
+						if(isset($remarks[$key])){
+				 $this->data['check_details'][$key]->remarks=$remarks[$key];	
+						}else{
+				 $this->data['check_details'][$key]->remarks="";			
+						}
+						if(isset($status[$key])){
+				 $this->data['check_details'][$key]->status=$status[$key];	
+						}else{
+					 $this->data['check_details'][$key]->status="";		
+						}
+				}
+			
+			}
+		 }else{
+	   $row= DB::getSchemaBuilder()->getColumnListing('machine_pm_detail_t');
+        $this->data['row']=$row;
+			 	$this->data['pagemode']="create";
+       $pm=\DB::table('machine_pm_detail_t')->where('initiate_pm_id',$id)->get();
+       $this->data['initiate_pm_id']=$pm[0]->initiate_pm_id;
+       $this->data['pm_checking_id']="";
+       $this->data['pm_no']=$pm[0]->pm_no;
+       $this->data['initiate_date']=$pm[0]->initiate_date;
+       $this->data['change_date']=$pm[0]->change_date;
+       $this->data['shift_timing']=$pm[0]->shift_timing;
+       $this->data['postponed_date']=$pm[0]->postponed_date;
+        $this->data['machine_id'] = $this->jCombologin('machine_hdr_t', 'machine_id', 'asset_code|machine_name', $pm[0]->machine_id);      
+        $this->data['machine_number'] = $this->jCombologin('machine_hdr_t', 'machine_id', 'machine_no', $pm[0]->machine_id);      
+        $this->data['agency_allocation'] = $this->jCombologin('ma_agency_t', 'agency_id', 'agency_name', $pm[0]->allocated_agency);      
+        $this->data['department_id'] = $this->jCombologin('ma_department_t', 'department_id', 'department_name', $pm[0]->department_id);      
+        $user_clear=json_decode($pm[0]->user_clearance_by);
+        $user_clear_id="";
+        foreach($user_clear as $k=>$v){
+           $user_clear_id.=$v.","; 
+        }
+        $user_clearance_by=rtrim($user_clear_id,",");
+        
+        $this->data['user_clearance_by'] = $this->jcustommultiselect('tb_users', 'id', 'employee_number|first_name',$user_clearance_by,'and id in ('.$user_clearance_by.')');      
+          $this->data['check_details']=\DB::select("SELECT checklist_tbl.checklist_id,checklist_tbl.terms,checklist_tbl.file,checklist_tbl.checklist_name from m_checklist_hrd_tbl left join checklist_lines_tbl on checklist_lines_tbl.checklist_hrd_id=m_checklist_hrd_tbl.checklist_hrd_id left join checklist_tbl on checklist_tbl.checklist_id=checklist_lines_tbl.checklist_id where m_checklist_hrd_tbl.machine_id='".$pm[0]->machine_id."' and m_checklist_hrd_tbl.department_id='".$pm[0]->department_id."' and m_checklist_hrd_tbl.frequency_id='".$pm[0]->frequency_id."'");
+		 }
+    }
+	print_r($this->data);die;
+          return view('initiatepm.pmmonthform',$this->data);
+    }
+    /** Store a newly created data & update data in db  */
+     public function save(Request $request)
+    {
+         //dd($_POST);
+         $todayDate = date('d-m-Y');
+$stop_date =  date('Y-m-d', strtotime($todayDate . ' +1 day'));
+
+$validatedData= $this->validate($request, [
+            'pm_no' =>  ['required',
+                function($attribute, $value, $fail) {
+                    $regex = "((https?|ftp)\:\/\/)?"; // SCHEME 
+                    $regex .= "([a-z0-9+!*(),;?&=\$_.-]+(\:[a-z0-9+!*(),;?&=\$_.-]+)?@)?"; // User and Pass 
+                    $regex .= "([a-z0-9-.]*)\.([a-z]{2,3})"; // Host or IP 
+                    $regex .= "(\:[0-9]{2,5})?"; // Port 
+                    $regex .= "(\/([a-z0-9+\$_-]\.?)+)*\/?"; // Path 
+                    $regex .= "(\?[a-z+&\$_.-][a-z0-9;:@&%=+\/\$_.-]*)?"; // GET Query 
+                    $regex .= "(#[a-z_.-][a-z0-9+\$_.-]*)?"; // Anchor 
+            
+                  if(preg_match("/^$regex$/i", $value)) // `i` flag for case-insensitive
+                  {
+                    return $fail($attribute.' is invalid (contains url).');
+                  }
+                },function($attribute,$value,$fail){
+              
+                  if (str_contains($value, 'script')) {  
+                      return $fail($attribute. ' contains script.');
+                  }   if (str_contains($value, '=')) {  
+                      return $fail($attribute. ' contains equal.');
+                  }
+                },
+            ],
+              'user_clearance_by' => ['required',
+                function($attribute, $value, $fail) {
+                   
+                  
+                  foreach($value as $val)
+                  {
+                     if(!is_numeric($val)){
+                          return $fail($attribute.' is invalid.');
+                     }
+                  }
+                },
+            ],
+            // 'user_clearance_by' =>  ['required',
+            //     function($attribute, $value, $fail) {
+            //         $regex = "((https?|ftp)\:\/\/)?"; // SCHEME 
+            //         $regex .= "([a-z0-9+!*(),;?&=\$_.-]+(\:[a-z0-9+!*(),;?&=\$_.-]+)?@)?"; // User and Pass 
+            //         $regex .= "([a-z0-9-.]*)\.([a-z]{2,3})"; // Host or IP 
+            //         $regex .= "(\:[0-9]{2,5})?"; // Port 
+            //         $regex .= "(\/([a-z0-9+\$_-]\.?)+)*\/?"; // Path 
+            //         $regex .= "(\?[a-z+&\$_.-][a-z0-9;:@&%=+\/\$_.-]*)?"; // GET Query 
+            //         $regex .= "(#[a-z_.-][a-z0-9+\$_.-]*)?"; // Anchor 
+            
+            //       if(preg_match("/^$regex$/i", $value)) // `i` flag for case-insensitive
+            //       {
+            //         return $fail($attribute.' is invalid (contains url).');
+            //       }
+            //     },function($attribute,$value,$fail){
+              
+            //       if (str_contains($value, 'script')) {  
+            //           return $fail($attribute. ' contains script.');
+            //       }
+            //     },
+            // ],
+              'machine_number' =>  'required',
+             
+             'actual_pm_date' =>  'required|date_format:d-m-Y',
+            'initiate_date' => 'required|date_format:d-m-Y|after_or_equal:'.$todayDate,
+            'department_id' =>  'int',
+            'machine_number' =>  'int',
+            'machine_id' =>  'int',
+            ]);
+          $id='';
+	  //$data = $this->validatePost($request->all(),$this->table,'header');
+          \DB::beginTransaction();
+            try{
+                $initiate_pm_id=$_POST['initiate_pm_id'];
+                $initiate_date=$_POST['initiate_date'];
+                $initiatedate=date("Y-m-d", strtotime($initiate_date));
+                $user_clearance_by=json_encode($_POST['user_clearance_by']);
+     \DB::update("UPDATE machine_pm_detail_t set initiate_status='1',initiate_date='$initiatedate',user_clearance_by='$user_clearance_by' where initiate_pm_id='$initiate_pm_id'");
+
+                         	\DB::commit();
+				return response()->json(array('status' => 'success', 'message' => 'Initiated Successfully','id' => $_POST['initiate_pm_id']));
+			}
+			catch (\Illuminate\Database\QueryException$e){
+				$message = explode('(', $e->getMessage());
+				$dbCode = rtrim($message[0], ']');
+				$dbCode = trim($dbCode, '[');
+                   dd($dbCode);       
+				\DB::rollback();
+				return response()->json(array('status' => 'error', 'message' => 'DatabaseError:=>' . $dbCode . "\n"));
+			}
+}
+
+  public function pmclearancesave(Request $request)
+    {
+       // dd($_POST);
+          $id='';
+          $todayDate = date('d-m-Y');
+	  $data = $this->validatePost($request->all(),$this->table,'header');
+	  $validatedData=   $this->validate($request, [
+            'machine_no' =>  [
+                function($attribute, $value, $fail) {
+                    $regex = "((https?|ftp)\:\/\/)?"; // SCHEME 
+                    $regex .= "([a-z0-9+!*(),;?&=\$_.-]+(\:[a-z0-9+!*(),;?&=\$_.-]+)?@)?"; // User and Pass 
+                    $regex .= "([a-z0-9-.]*)\.([a-z]{2,3})"; // Host or IP 
+                    $regex .= "(\:[0-9]{2,5})?"; // Port 
+                    $regex .= "(\/([a-z0-9+\$_-]\.?)+)*\/?"; // Path 
+                    $regex .= "(\?[a-z+&\$_.-][a-z0-9;:@&%=+\/\$_.-]*)?"; // GET Query 
+                    $regex .= "(#[a-z_.-][a-z0-9+\$_.-]*)?"; // Anchor 
+            
+                  if(preg_match("/^$regex$/i", $value)) // `i` flag for case-insensitive
+                  {
+                    return $fail($attribute.' is invalid (contains url).');
+                  }
+                },function($attribute,$value,$fail){
+              
+                  if (str_contains($value, 'script')) {  
+                      return $fail($attribute. ' contains script.');
+                  }  if (str_contains($value, '=')) {  
+                      return $fail($attribute. ' contains equal.');
+                  }
+                },
+            ],      'user_clearance_by' => [
+                function($attribute, $value, $fail) {
+                   
+                  
+                  foreach($value as $val)
+                  {
+                     if(!is_numeric($val)){
+                          return $fail($attribute.' is invalid.');
+                     }
+                  }
+                },
+            ],
+            'initiate_pm_id' =>  'required',
+            'change_date' =>  'required|int',
+            'machine_number' =>  'int',
+            'department_id' =>  'int',
+              'actual_pm_date' => 'date_format:d-m-Y',  
+              'shift_timing' => 'nullable|date_format:d-m-Y H:i',  
+            'postponed_date' => 'nullable|date_format:d-m-Y|after_or_equal:'.$todayDate,     
+            ]);
+          \DB::beginTransaction();
+            try{
+               $status=$_POST['status'];
+			$employee_id =\Session::get('id');
+			$date=date("Y-m-d H:i:s");
+			$initiate_pm_id=$_POST['initiate_pm_id'];
+			$shifttiming=$_POST['shift_timing'];
+			$postponeddate=$_POST['postponed_date'];
+			$change_date=$_POST['change_date'];
+                        $postponed_date=date("Y-m-d", strtotime($postponeddate));
+                        $shift_timing=date("Y-m-d H:i:s", strtotime($shifttiming));
+			if($status=="1"){
+			\DB::update("update machine_pm_detail_t set change_date='$change_date',status='$status',cleared_by='$employee_id',cleared_on='$date',shift_timing='$shift_timing' where initiate_pm_id='$initiate_pm_id'");
+		} elseif($status == "0") {
+			\DB::update("update machine_pm_detail_t set change_date='$change_date',initiate_status='0',postpone_status='1',cleared_by='$employee_id',cleared_on='$date',postponed_date='$postponed_date' where initiate_pm_id='$initiate_pm_id'");
+		}
+                         	\DB::commit();
+				return response()->json(array('status' => 'success', 'message' => 'User Clearanced Successfully','id' => $_POST['initiate_pm_id']));
+			}
+			catch (\Illuminate\Database\QueryException$e){
+				$message = explode('(', $e->getMessage());
+				$dbCode = rtrim($message[0], ']');
+				$dbCode = trim($dbCode, '[');
+                              
+				\DB::rollback();
+				return response()->json(array('status' => 'error', 'message' => 'DatabaseError:=>' . $dbCode . "\n"));
+			}
+}
+public function pmagencyallocationsave(Request $request)
+    {
+       // dd($_POST);
+          $id='';
+          
+      $todayDate = date('d-m-Y');
+      
+      $validatedData=   $this->validate($request, [
+            'allocation_type' =>  ['required',
+                function($attribute, $value, $fail) {
+                    $regex = "((https?|ftp)\:\/\/)?"; // SCHEME 
+                    $regex .= "([a-z0-9+!*(),;?&=\$_.-]+(\:[a-z0-9+!*(),;?&=\$_.-]+)?@)?"; // User and Pass 
+                    $regex .= "([a-z0-9-.]*)\.([a-z]{2,3})"; // Host or IP 
+                    $regex .= "(\:[0-9]{2,5})?"; // Port 
+                    $regex .= "(\/([a-z0-9+\$_-]\.?)+)*\/?"; // Path 
+                    $regex .= "(\?[a-z+&\$_.-][a-z0-9;:@&%=+\/\$_.-]*)?"; // GET Query 
+                    $regex .= "(#[a-z_.-][a-z0-9+\$_.-]*)?"; // Anchor 
+            
+                  if(preg_match("/^$regex$/i", $value)) // `i` flag for case-insensitive
+                  {
+                    return $fail($attribute.' is invalid (contains url).');
+                  }
+                },function($attribute,$value,$fail){
+              
+                  if (str_contains($value, 'script')) {  
+                      return $fail($attribute. ' contains script.');
+                  }if (str_contains($value, '=')) {  
+                      return $fail($attribute. ' contains equal.');
+                  }
+                },
+            ],  
+            'pm_no' =>  ['required',
+                function($attribute, $value, $fail) {
+                    $regex = "((https?|ftp)\:\/\/)?"; // SCHEME 
+                    $regex .= "([a-z0-9+!*(),;?&=\$_.-]+(\:[a-z0-9+!*(),;?&=\$_.-]+)?@)?"; // User and Pass 
+                    $regex .= "([a-z0-9-.]*)\.([a-z]{2,3})"; // Host or IP 
+                    $regex .= "(\:[0-9]{2,5})?"; // Port 
+                    $regex .= "(\/([a-z0-9+\$_-]\.?)+)*\/?"; // Path 
+                    $regex .= "(\?[a-z+&\$_.-][a-z0-9;:@&%=+\/\$_.-]*)?"; // GET Query 
+                    $regex .= "(#[a-z_.-][a-z0-9+\$_.-]*)?"; // Anchor 
+            
+                  if(preg_match("/^$regex$/i", $value)) // `i` flag for case-insensitive
+                  {
+                    return $fail($attribute.' is invalid (contains url).');
+                  }
+                },function($attribute,$value,$fail){
+              
+                  if (str_contains($value, 'script')) {  
+                      return $fail($attribute. ' contains script.');
+                  }  if (str_contains($value, 'equal')) {  
+                      return $fail($attribute. ' contains equal.');
+                  }
+                },
+            ],  
+            'allocation_type' =>  ['required',
+                function($attribute, $value, $fail) {
+                    $regex = "((https?|ftp)\:\/\/)?"; // SCHEME 
+                    $regex .= "([a-z0-9+!*(),;?&=\$_.-]+(\:[a-z0-9+!*(),;?&=\$_.-]+)?@)?"; // User and Pass 
+                    $regex .= "([a-z0-9-.]*)\.([a-z]{2,3})"; // Host or IP 
+                    $regex .= "(\:[0-9]{2,5})?"; // Port 
+                    $regex .= "(\/([a-z0-9+\$_-]\.?)+)*\/?"; // Path 
+                    $regex .= "(\?[a-z+&\$_.-][a-z0-9;:@&%=+\/\$_.-]*)?"; // GET Query 
+                    $regex .= "(#[a-z_.-][a-z0-9+\$_.-]*)?"; // Anchor 
+            
+                  if(preg_match("/^$regex$/i", $value)) // `i` flag for case-insensitive
+                  {
+                    return $fail($attribute.' is invalid (contains url).');
+                  }
+                },function($attribute,$value,$fail){
+              
+                  if (str_contains($value, 'script')) {  
+                      return $fail($attribute. ' contains script.');
+                  }  if (str_contains($value, 'equal')) {  
+                      return $fail($attribute. ' contains equal.');
+                  }
+                },
+            ],            
+            'agency_allocation' =>  ['required',
+                function($attribute, $value, $fail) {
+                    $regex = "((https?|ftp)\:\/\/)?"; // SCHEME 
+                    $regex .= "([a-z0-9+!*(),;?&=\$_.-]+(\:[a-z0-9+!*(),;?&=\$_.-]+)?@)?"; // User and Pass 
+                    $regex .= "([a-z0-9-.]*)\.([a-z]{2,3})"; // Host or IP 
+                    $regex .= "(\:[0-9]{2,5})?"; // Port 
+                    $regex .= "(\/([a-z0-9+\$_-]\.?)+)*\/?"; // Path 
+                    $regex .= "(\?[a-z+&\$_.-][a-z0-9;:@&%=+\/\$_.-]*)?"; // GET Query 
+                    $regex .= "(#[a-z_.-][a-z0-9+\$_.-]*)?"; // Anchor 
+            
+                  if(preg_match("/^$regex$/i", $value)) // `i` flag for case-insensitive
+                  {
+                    return $fail($attribute.' is invalid (contains url).');
+                  }
+                },function($attribute,$value,$fail){
+              
+                  if (str_contains($value, 'script')) {  
+                      return $fail($attribute. ' contains script.');
+                  }  if (str_contains($value, 'equal')) {  
+                      return $fail($attribute. ' contains equal.');
+                  }
+                },
+            ],            
+            'user_clearance_by' => ['required',
+                function($attribute, $value, $fail) {
+                   
+                  
+                  foreach($value as $val)
+                  {
+                     if(!is_numeric($val)){
+                          return $fail($attribute.' is invalid.');
+                     }
+                  }
+                },
+            ],
+
+            'postponed_date' =>  'nullable|date_format:d-m-Y|after_or_equal:'.$todayDate,
+              'initiate_pm_id' =>  'int',
+              'department_id' =>  'int',
+              'machine_id' =>  'int',
+              'machine_number' =>  'int',
+                'change_date' =>  'required|int',
+               'actual_pm_date' => 'nullable|date_format:d-m-Y',  
+               'shift_timing' => 'nullable|date_format:d-m-Y',  
+             
+             
+            ]);
+          
+	  $data = $this->validatePost($request->all(),$this->table,'header');
+          \DB::beginTransaction();
+            try{
+                        $employee_id =\Session::get('id');
+                        $date=date("Y-m-d H:i:s");
+			$initiate_pm_id=$_POST['initiate_pm_id'];
+			$allocated_agency=$_POST['agency_allocation'];
+			\DB::update("update machine_pm_detail_t set status='2',allocated_by='$employee_id',allocated_on='$date',allocated_agency='$allocated_agency' where initiate_pm_id='$initiate_pm_id'");
+			
+                         	\DB::commit();
+				return response()->json(array('status' => 'success', 'message' => 'Agency Allocated Successfully','id' => $_POST['initiate_pm_id']));
+			}
+			catch (\Illuminate\Database\QueryException$e){
+				$message = explode('(', $e->getMessage());
+				$dbCode = rtrim($message[0], ']');
+				$dbCode = trim($dbCode, '[');
+                              //  dd($dbCode);
+				\DB::rollback();
+				return response()->json(array('status' => 'error', 'message' => 'DatabaseError:=>' . $dbCode . "\n"));
+			}
+}
+public function pmmonthlychecksave(Request $request)
+    {
+    // dd($_POST);
+   
+   $todayDate = date('d-m-Y');
+
+$validatedData=   $this->validate($request, [
+            'pm_no' =>  'required',
+             'postponed_date' =>  'nullable|date_format:d-m-Y|after_or_equal:'.$todayDate,
+             'initiate_pm_id'=>'required|int',
+             'machine_id'=>'int',
+            //   'status' => [
+            //     function($attribute, $value, $fail) {
+                   
+                  
+            //       foreach($value as $val)
+            //       {
+            //          if(!is_numeric($val)){
+            //               return $fail($attribute.' is invalid.');
+            //          }
+            //       }
+            //     },
+            // ],  
+            'checklist' => [
+                function($attribute, $value, $fail) {
+                   
+                  
+                  foreach($value as $val)
+                  {
+                     if(!is_numeric($val)){
+                          return $fail($attribute.' is invalid.');
+                     }
+                  }
+                },
+            ],  
+            'observation' => [
+                function($attribute, $value, $fail) {
+                    $regex = "((https?|ftp)\:\/\/)?"; // SCHEME 
+                    $regex .= "([a-z0-9+!*(),;?&=\$_.-]+(\:[a-z0-9+!*(),;?&=\$_.-]+)?@)?"; // User and Pass 
+                    $regex .= "([a-z0-9-.]*)\.([a-z]{2,3})"; // Host or IP 
+                    $regex .= "(\:[0-9]{2,5})?"; // Port 
+                    $regex .= "(\/([a-z0-9+\$_-]\.?)+)*\/?"; // Path 
+                    $regex .= "(\?[a-z+&\$_.-][a-z0-9;:@&%=+\/\$_.-]*)?"; // GET Query 
+                    $regex .= "(#[a-z_.-][a-z0-9+\$_.-]*)?"; // Anchor 
+            
+                  
+                  foreach($value as $val)
+                  {
+                     if(preg_match("/^$regex$/i", $val)) // `i` flag for case-insensitive
+                  {
+                    return $fail($attribute.' is invalid (contains url).');
+                  }
+                  
+                   if (str_contains($val, 'script')) {  
+                      return $fail($attribute. ' contains script.');
+                  }  if (str_contains($val, 'equal')) {  
+                      return $fail($attribute. ' contains equal.');
+                  }
+                  
+                  }
+                },
+            ],
+            'remarks' => [
+                function($attribute, $value, $fail) {
+                    $regex = "((https?|ftp)\:\/\/)?"; // SCHEME 
+                    $regex .= "([a-z0-9+!*(),;?&=\$_.-]+(\:[a-z0-9+!*(),;?&=\$_.-]+)?@)?"; // User and Pass 
+                    $regex .= "([a-z0-9-.]*)\.([a-z]{2,3})"; // Host or IP 
+                    $regex .= "(\:[0-9]{2,5})?"; // Port 
+                    $regex .= "(\/([a-z0-9+\$_-]\.?)+)*\/?"; // Path 
+                    $regex .= "(\?[a-z+&\$_.-][a-z0-9;:@&%=+\/\$_.-]*)?"; // GET Query 
+                    $regex .= "(#[a-z_.-][a-z0-9+\$_.-]*)?"; // Anchor 
+            
+                  
+                  foreach($value as $val)
+                  {
+                     if(preg_match("/^$regex$/i", $val)) // `i` flag for case-insensitive
+                  {
+                    return $fail($attribute.' is invalid (contains url).');
+                  }
+                  
+                   if (str_contains($val, 'script')) {  
+                      return $fail($attribute. ' contains script.');
+                  }  if (str_contains($val, 'equal')) {  
+                      return $fail($attribute. ' contains equal.');
+                  }
+                  
+                  }
+                },
+            ],  'status' => [
+                function($attribute, $value, $fail) {
+                    $regex = "((https?|ftp)\:\/\/)?"; // SCHEME 
+                    $regex .= "([a-z0-9+!*(),;?&=\$_.-]+(\:[a-z0-9+!*(),;?&=\$_.-]+)?@)?"; // User and Pass 
+                    $regex .= "([a-z0-9-.]*)\.([a-z]{2,3})"; // Host or IP 
+                    $regex .= "(\:[0-9]{2,5})?"; // Port 
+                    $regex .= "(\/([a-z0-9+\$_-]\.?)+)*\/?"; // Path 
+                    $regex .= "(\?[a-z+&\$_.-][a-z0-9;:@&%=+\/\$_.-]*)?"; // GET Query 
+                    $regex .= "(#[a-z_.-][a-z0-9+\$_.-]*)?"; // Anchor 
+            
+                  
+                  foreach($value as $val)
+                  {
+                     if(preg_match("/^$regex$/i", $val)) // `i` flag for case-insensitive
+                  {
+                    return $fail($attribute.' is invalid (contains url).');
+                  }
+                  
+                   if (str_contains($val, 'script')) {  
+                      return $fail($attribute. ' contains script.');
+                  }  if (str_contains($val, 'equal')) {  
+                      return $fail($attribute. ' contains equal.');
+                  }
+                  
+                  }
+                },
+            ],
+              'pm_no' =>  ['required',
+                function($attribute, $value, $fail) {
+                    $regex = "((https?|ftp)\:\/\/)?"; // SCHEME 
+                    $regex .= "([a-z0-9+!*(),;?&=\$_.-]+(\:[a-z0-9+!*(),;?&=\$_.-]+)?@)?"; // User and Pass 
+                    $regex .= "([a-z0-9-.]*)\.([a-z]{2,3})"; // Host or IP 
+                    $regex .= "(\:[0-9]{2,5})?"; // Port 
+                    $regex .= "(\/([a-z0-9+\$_-]\.?)+)*\/?"; // Path 
+                    $regex .= "(\?[a-z+&\$_.-][a-z0-9;:@&%=+\/\$_.-]*)?"; // GET Query 
+                    $regex .= "(#[a-z_.-][a-z0-9+\$_.-]*)?"; // Anchor 
+            
+                  if(preg_match("/^$regex$/i", $value)) // `i` flag for case-insensitive
+                  {
+                    return $fail($attribute.' is invalid (contains url).');
+                  }
+                },function($attribute,$value,$fail){
+              
+                  if (str_contains($value, 'script')) {  
+                      return $fail($attribute. ' contains script.');
+                  }  if (str_contains($value, 'equal')) {  
+                      return $fail($attribute. ' contains equal.');
+                  }
+                },
+            ],  
+                           'actual_pm_date' => 'nullable|date_format:d-m-Y',
+                                           'change_date' =>  'required|int',
+                                           'department_id' =>  'nullable|int',
+                                           'agency_allocation' =>  'nullable|int',
+                                           'machine_number' =>  'nullable|int',
+                                                         'shift_timing' => 'nullable|date_format:Y-m-d H:i:s',  
+
+
+
+            //   'checklist' =>  'max:array[12]',
+            ]);
+    $data = $this->validatePost($request->all(),$this->table1,'header'); 
+	if($_POST['pm_checking_id']==""){
+     $pm_data['pm_checking_id']='';
+    $pm_data['machine_id']=$_POST['machine_id'];
+    $pm_data['department_id']=$_POST['department_id'];
+    $pm_data['initate_pm_id']=$_POST['initiate_pm_id'];
+    $pm_data['checklist']=json_encode($_POST['checklist']);
+    $pm_data['observation']=json_encode($_POST['observation']);
+    $pm_data['status']=json_encode($_POST['status']);
+    $pm_data['remarks']=json_encode($_POST['remarks']);
+		$pm_data['approval_status']="";
+	}else{
+		  $pm_data['pm_checking_id']=$_POST['pm_checking_id'];
+	$pm_data['approval_status']=$_POST['savestatus'];	
+	}
+          \DB::beginTransaction();
+            try{
+                        $done_date=$checked_by=date("Y-m-d");
+                        $done_time=date("H:i:s");
+                        $done_on_by=\Session::get('id');
+                        $id=$this->model->insertRow($pm_data); 
+                        $update_status=\DB::update("UPDATE machine_pm_detail_t set status='3',done_on_by='$done_on_by',done_on_date='$done_date',done_on_time='$done_time' where initiate_pm_id='".$_POST['initiate_pm_id']."'");
+			$data_sleect=\DB::SELECT("SELECT * FROM machine_pm_detail_t where initiate_pm_id='".$_POST['initiate_pm_id']."'");	
+                        $bulk_frequency_date=$done_date;
+                        $data1=[];
+                     
+				if($data_sleect[0]->frequency_id=="Daily"){
+							$data1['actual_pm_date']=date('Y-m-d', strtotime('+1 day', strtotime($bulk_frequency_date)));
+						}else if($data_sleect[0]->frequency_id=="Weekly"){
+							$data1['actual_pm_date']=date('Y-m-d', strtotime('+7 day', strtotime($bulk_frequency_date)));
+						}else if($data_sleect[0]->frequency_id=="Monthly"){
+							$data1['actual_pm_date']=date('Y-m-d', strtotime('+1 month', strtotime($bulk_frequency_date)));
+						}
+                                                else if($data_sleect[0]->frequency_id=="Yearly"){
+							$data1['actual_pm_date']=date('Y-m-d', strtotime('+12 month', strtotime($bulk_frequency_date)));
+						}
+                                                else if($data_sleect[0]->frequency_id=="HalfYearly"){
+							$data1['actual_pm_date']=date('Y-m-d', strtotime('+6 month', strtotime($bulk_frequency_date)));
+						}
+                                                else if($data_sleect[0]->frequency_id=="Quartely"){
+							$data1['actual_pm_date']=date('Y-m-d', strtotime('+4 month', strtotime($bulk_frequency_date)));
+						}
+						 $seqno = $this->Seqnoe('PM-', 'machine_pm_detail_t', '','pm_count');
+                                                 $data1['pm_no'] = $seqno[0];
+                                                 $data1['pm_count'] = $seqno[1];
+						 $data1['machine_id']=$data_sleect[0]->machine_id;
+						 $data1['department_id']=$data_sleect[0]->department_id;
+	                                         $data1['frequency_id']=$data_sleect[0]->frequency_id;
+						 \DB::table('machine_pm_detail_t')->insert($data1);
+                        
+                        \DB::commit();
+				return response()->json(array('status' => 'success', 'message' => 'PM Checked Successfully','id' => $_POST['initiate_pm_id']));
+			}
+			catch (\Illuminate\Database\QueryException$e){
+				$message = explode('(', $e->getMessage());
+				$dbCode = rtrim($message[0], ']');
+				$dbCode = trim($dbCode, '[');
+                              
+				\DB::rollback();
+				return response()->json(array('status' => 'error', 'message' => 'DatabaseError:=>' . $dbCode . "\n"));
+			}
+}
+
+}

@@ -1,0 +1,3 @@
+Department,Machine,Breakdown Type,Issue Date,Breakdown Severity,Causes of Breakdown,Maintenance Type,Shift,Issue Created By,Priority Option,Technician,Repair Start Date,Repair End Date,Request Remarks,Preventive Action,Corrective Action
+Utility,72,Power cable,13-01-26 10:00,Minor,Test Issue for INITIATED ticket,Machine,1st Shift,superadmin,Low,,,,Testing INITIATED flow,,
+Utility,72,Power cable,13-01-26 11:00,Major,Test Issue for CLOSED ticket,Machine,1st Shift,superadmin,High,,13-01-26 11:30,13-01-26 12:00,Testing CLOSED flow,Preventive maintenance scheduled,Replaced power cable

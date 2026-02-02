@@ -1,0 +1,55 @@
+﻿Machine Number*,Machine Name*,Department Name*,Machine Capacity,Asset Code*,Group*,Location*,Relocated Date,Purchased Date,Machine Make,Machine Remarks,Machine Cost,Image Name,Critical,Day Working Hour,Vendor,AMC Vendor,Renewal Date,From Date,To Date,Frequency,Frequency Date
+MA001,CNC MACHINE - 4 FAB BAY 1,Fabrication,,59980150,CNC Machines,,,,,,,,,,,,,,,Monthly,14/6/2022
+MA002,CNC MACHINE - 9 FAB BAY 1,Fabrication,,599A3746,CNC Machines,,,,,,,,,,,,,,,Monthly,14/6/2022
+MA003,CNC MACHINE - 10 FAB BAY 2,Fabrication,,599A4149,CNC Machines,,,,,,,,,,,,,,,Monthly,14/6/2022
+MA004,CNC  MACHINE - 6 FAB BAY 2,Fabrication,,59980311,CNC Machines,,,,,,,,,,,,,,,Monthly,14/6/2022
+MA005,CNC DRILL MACHINE -5 FAB BAY 2,Fabrication,,59990457,CNC Machines,,,,,,,,,,,,,,,Monthly,14/6/2022
+MA006,CNC  MACHINE - 7 FAB BAY 2,Fabrication,,59994886,CNC Machines,,,,,,,,,,,,,,,Monthly,14/6/2022
+MA007,CNC MACHINE - 3 FAB BAY 2,Fabrication,,30660010P,CNC Machines,,,,,,,,,,,,,,,Monthly,14/6/2022
+MA008,CNC MACHINE - 2 FAB BAY 1,Fabrication,,30660020P,CNC Machines,,,,,,,,,,,,,,,Monthly,14/6/2022
+MA009,CNC  MACHINE - 1 FAB BAY 1,Fabrication,,59980050P,CNC Machines,,,,,,,,,,,,,,,Monthly,14/6/2022
+MA010,CNC MACHINE - 8 FAB BAY 1,Fabrication,,599A0313,CNC Machines,,,,,,,,,,,,,,,Monthly,14/6/2022
+MA011,CNC Plate Punching FAB BAY 3,Fabrication,,599A3584,CNC Machines,,,,,,,,,,,,,,,Monthly,14/6/2022
+MA012,EOT CRANE - 7 FAB BAY 1,Fabrication,,59991429,EOT Crane,,,,,,,,,,,,,,,Monthly,14/6/2022
+MA013,EOT CRANE - 8 FAB BAY 2,Fabrication,,59991909,EOT Crane,,,,,,,,,,,,,,,Monthly,14/6/2022
+MA014,EOT CRANE - 9 FAB BAY 3,Fabrication,,59991917,EOT Crane,,,,,,,,,,,,,,,Monthly,14/6/2022
+MA015,EOT CRANE - 10 FAB BAY 3,Fabrication,,59991925,EOT Crane,,,,,,,,,,,,,,,Monthly,14/6/2022
+MA016,EOT CRANE - 1 FAB BAY 1,Fabrication,,06550010P,EOT Crane,,,,,,,,,,,,,,,Monthly,14/6/2022
+MA017,EOT CRANE - 2 FAB BAY 2,Fabrication,,06550060P,EOT Crane,,,,,,,,,,,,,,,Monthly,14/6/2022
+MA018,EOT CRANE -13 FAB BAY 1,Fabrication,,66550040,EOT Crane,,,,,,,,,,,,,,,Monthly,14/6/2022
+MA019,EOT CRANE - 13 FAB BENDING SHED,Fabrication,,06550040P,EOT Crane,,,,,,,,,,,,,,,Monthly,14/6/2022
+MA020,EOT CRANE - 6,Fabrication,,59991437,EOT Crane,,,,,,,,,,,,,,,Monthly,14/6/2022
+MA021,EOT CRANE - 5,Fabrication,,06550080P,EOT Crane,,,,,,,,,,,,,,,Monthly,14/6/2022
+MA022,EOT CRANE - 4,Fabrication,,06550090P,EOT Crane,,,,,,,,,,,,,,,Monthly,14/6/2022
+MA023,EOT CRANE - 3,Fabrication,,06550100P,EOT Crane,,,,,,,,,,,,,,,Monthly,14/6/2022
+MA024,EOT CRANE - 11,Fabrication,,59982390,EOT Crane,,,,,,,,,,,,,,,Monthly,14/6/2022
+MA025,EOT CRANE - 12,Fabrication,,06550030P,EOT Crane,,,,,,,,,,,,,,,Monthly,14/6/2022
+MA026,EOT CRANE - 14,Fabrication,,6550720,EOT Crane,,,,,,,,,,,,,,,Monthly,14/6/2022
+MA027,EOT CRANE - 15,Fabrication,,6550711,EOT Crane,,,,,,,,,,,,,,,Monthly,14/6/2022
+MA028,EOT CRANE - 16,Fabrication,,6550703,EOT Crane,,,,,,,,,,,,,,,Monthly,14/6/2022
+MA029,EOT CRANE - 17,Fabrication,,6550690,EOT Crane,,,,,,,,,,,,,,,Monthly,14/6/2022
+MA030,EOT CRANE-19,Fabrication,,6550835,EOT Crane,,,,,,,,,,,,,,,Monthly,14/6/2022
+MA031,EOT CRANE-18,Fabrication,,6550827,EOT Crane,,,,,,,,,,,,,,,Monthly,14/6/2022
+MA032,EOT CRANE-20,Fabrication,,6550843,EOT Crane,,,,,,,,,,,,,,,Monthly,14/6/2022
+MA033,EOT CRANE-21,Fabrication,,6550851,EOT Crane,,,,,,,,,,,,,,,Monthly,14/6/2022
+MA034,EOT CRANE - 18,Fabrication,,6550827,EOT Crane,,,,,,,,,,,,,,,Monthly,14/6/2022
+MA035,EOT CRANE - 19,Fabrication,,6550835,EOT Crane,,,,,,,,,,,,,,,Monthly,14/6/2022
+MA036,EOT CRANE - 20,Fabrication,,6550843,EOT Crane,,,,,,,,,,,,,,,Monthly,14/6/2022
+MA037,EOT CRANE - 21,Fabrication,,6550851,EOT Crane,,,,,,,,,,,,,,,Monthly,14/6/2022
+MA038,EOT CRANE-22,Fabrication,,6550789,EOT Crane,,,,,,,,,,,,,,,Monthly,14/6/2022
+MA039,EOT CRANE-23,Fabrication,,6550797,EOT Crane,,,,,,,,,,,,,,,Monthly,14/6/2022
+MA040,EOT CRANE - 22,Fabrication,,6550789,EOT Crane,,,,,,,,,,,,,,,Monthly,14/6/2022
+MA041,EOT CRANE - 23,Fabrication,,6550797,EOT Crane,,,,,,,,,,,,,,,Monthly,14/6/2022
+MA042,GANTRY CRANE - 7,Dispatch,,6600522,Gantry,,,,,,,,,,,,,,,Monthly,14/6/2022
+MA043,GANTRY CRANE - 3,Dispatch,,06550050P,Gantry,,,,,,,,,,,,,,,Monthly,14/6/2022
+MA044,GANTRY CRANE - 8,Dispatch,,6601065,Gantry,,,,,,,,,,,,,,,Monthly,14/6/2022
+MA045,GANTRY CRANE - 9,Dispatch,,6601073,Gantry,,,,,,,,,,,,,,,Monthly,14/6/2022
+MA046,GANTRY CRANE - 5,Dispatch,,6600212,Gantry,,,,,,,,,,,,,,,Monthly,14/6/2022
+MA047,GANTRY CRANE - 6,Dispatch,,6600417,Gantry,,,,,,,,,,,,,,,Monthly,14/6/2022
+MA048,GANTRY CRANE - 4,Dispatch,,6600425,Gantry,,,,,,,,,,,,,,,Monthly,14/6/2022
+MA049,GANTRY CRANE - 1,Dispatch,,59980320P,Gantry,,,,,,,,,,,,,,,Monthly,14/6/2022
+MA050,GANTRY CRANE - 2,Dispatch,,59980370P,Gantry,,,,,,,,,,,,,,,Monthly,14/6/2022
+MA051,GANTRY CRANE - 10,Dispatch,,599A3193,Gantry,,,,,,,,,,,,,,,Monthly,14/6/2022
+MA052,GANTRY CRANE - 11,Dispatch,,599A3207,Gantry,,,,,,,,,,,,,,,Monthly,14/6/2022
+MA053,GANTRY CRANE - 14,Dispatch,,6601219,Gantry,,,,,,,,,,,,,,,Monthly,14/6/2022
+MA054,GANTRY CRANE - 15,Dispatch,,6601227,Gantry,,,,,,,,,,,,,,,Monthly,14/6/2022

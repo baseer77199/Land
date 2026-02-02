@@ -1,0 +1,158 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use DB;
+
+class HomeController extends Controller
+{
+
+    public function index()
+    {
+$data=array();
+ \Mail::send('mail',$data, function($message)
+                    {
+                     
+                        $message->to('isac@i5tech.in');
+                        $message->subject('Test');
+                        
+                    });
+
+ $loc=\Session::get('location');
+    
+        $data = \DB::table('b_maintenance_t')
+        ->leftjoin('ma_department_t','ma_department_t.department_id','=','b_maintenance_t.department_id')
+        ->leftjoin('machine_hdr_t','machine_hdr_t.machine_id','=','b_maintenance_t.machine_id')
+        ->leftjoin('m_breakdowntype_t','m_breakdowntype_t.breakdowntype_id','=','b_maintenance_t.break_type_id')
+        ->leftjoin('breakdown_severity','breakdown_severity.breakdownseverity_id','=','b_maintenance_t.breakdown_sevearity')
+        ->leftjoin('tb_users as e_name','e_name.id','=','b_maintenance_t.engineer')
+        ->leftjoin('tb_users as t_name','t_name.id','=','b_maintenance_t.technician')
+            ->select('b_maintenance_t.issue_date','b_maintenance_t.ticket_number','b_maintenance_t.maintenance_type','b_maintenance_t.causes','ma_department_t.department_name','machine_hdr_t.machine_name','m_breakdowntype_t.breakdown_name','breakdown_severity.severity_name','b_maintenance_t.active','t_name.first_name as tech_name','e_name.first_name as eng_name','b_maintenance_t.request_status')->where('machine_hdr_t.location_id',$loc)->where('b_maintenance_t.request_status','OPEN')
+            ->get();
+            
+         $chartdata = \DB::table('b_maintenance_t')
+        ->leftjoin('machine_hdr_t','b_maintenance_t.machine_id','=','machine_hdr_t.machine_id')
+        ->leftjoin('machine_group_t','machine_group_t.group_id','=','machine_hdr_t.group_id')
+        ->select(DB::raw('count(b_maintenance_t.id) as idd'),'machine_group_t.group_name')
+        ->groupby('machine_group_t.group_name')
+        ->get();
+         
+      
+  $break=[];
+        foreach($chartdata as $key=>$valu){
+            
+              array_push($break,$valu->idd);
+               $value2[$key] = $valu->group_name;
+         
+        }
+        /*breack down dashboard*/
+        
+         $loc=\Session::get('location');
+
+        $wh2='';
+
+    $wh2='and  machine_hdr_t.location_id='.$loc;      
+ 
+$data1=DB::select("select * from(SELECT
+  aa.machine,
+  count(aa.machine_id) as count,
+  aa.sdate,
+  SEC_TO_TIME(
+  SUM(TIME_TO_SEC(aa.time_diff))
+  )as time_diff
+  FROM
+  (SELECT
+  (
+  SELECT
+  machine_hdr_t.machine_name
+  FROM
+  machine_hdr_t
+  WHERE
+  machine_hdr_t.machine_id = b_maintenance_t.machine_id $wh2
+  )as machine,
+  (
+  SELECT
+  ma_department_t.department_name
+  FROM
+  ma_department_t
+  WHERE
+  ma_department_t.department_id = b_maintenance_t.department_id 
+  )as dept,
+  b_maintenance_t.id as id,
+  TIMEDIFF(
+  end_date,
+  start_date
+  ) as time_diff,EXTRACT(MONTH FROM end_date) as sdate,
+  b_maintenance_t.machine_id
+  FROM
+  `b_maintenance_t` where 1=1 )as aa GROUP BY aa.machine
+  ORDER BY time_diff DESC
+  LIMIT 5)v1 where 1=1 and v1.machine!='' ");
+$return_data['data']=$data;
+
+        //print_r($data1);exit();
+        
+        /*breakdown dashboard end*/
+ 
+        $enchatid = json_encode($break);
+        $enchatname = json_encode($value2);
+        $this->data['row']= $data;
+        return view('home',$this->data)->with(compact('enchatid','enchatname'));
+    }
+
+
+public function jsondatadash(Request $request)
+{
+     $loc=\Session::get('location');
+
+ $sql=\db::table('machine_pm_detail_t')
+->leftjoin('machine_hdr_t','machine_hdr_t.machine_id','=','machine_pm_detail_t.machine_id')
+ ->select('machine_hdr_t.machine_name as title','machine_pm_detail_t.actual_pm_date as start')->where('status',0)->where('machine_hdr_t.location_id',$loc)->get();
+
+    return json_encode($sql);
+
+   
+}
+
+public function calendarjsondatadash1(){
+         $loc=\Session::get('location');
+
+    $data = \DB::table('b_maintenance_t')
+        ->leftjoin('ma_department_t','ma_department_t.department_id','=','b_maintenance_t.department_id')
+        ->leftjoin('machine_hdr_t','machine_hdr_t.machine_id','=','b_maintenance_t.machine_id')
+        ->leftjoin('m_breakdowntype_t','m_breakdowntype_t.breakdowntype_id','=','b_maintenance_t.break_type_id')
+        ->leftjoin('breakdown_severity','breakdown_severity.breakdownseverity_id','=','b_maintenance_t.breakdown_sevearity')
+        ->leftjoin('tb_users as e_name','e_name.id','=','b_maintenance_t.engineer')
+        ->leftjoin('tb_users as t_name','t_name.id','=','b_maintenance_t.technician')
+            ->select('machine_hdr_t.machine_name as title','b_maintenance_t.issue_date as start')->where('machine_hdr_t.location_id',$loc)->where('b_maintenance_t.request_status','OPEN')
+            ->get();
+
+   return json_encode($data);
+}
+
+     public function categoryval(){
+         $category=\db::select("select m_breakdowntype_t.breakdown_name as name,CONVERT(count(b_maintenance_t.id),SIGNED INTEGER) as y from b_maintenance_t left join m_breakdowntype_t on m_breakdowntype_t.breakdowntype_id=b_maintenance_t.break_type_id where 1=1 group by m_breakdowntype_t.breakdown_name");
+         
+        // print_r($category);exit;
+         $category = $category;
+         return $category;
+     }
+     public function getData()
+    {
+$headerdata = \DB::table('b_maintenance_t')
+ ->leftjoin('m_breakdowntype_t ', 'm_breakdowntype_t.breakdowntype_id', '=', 'b_maintenance_t.break_type_id')
+->leftjoin('ma_department_t ', 'ma_department_t.department_id', '=', 'b_maintenance_t.department_id')
+       ->select('b_maintenance_t.*', 'ma_department_t.department_name','m_breakdowntype_t.breakdown_name')
+          ->where('qh.quote_hdr_id',$id)
+            ->get();
+$this->data['linesdata']=$headerdata;
+foreach($headerdata as $key=>$value)
+            {
+            $this->data['linedata'][$key]->machine_id = $value->machine_id;
+            }
+   return view('home',$this->data);
+    }   
+    
+
+}

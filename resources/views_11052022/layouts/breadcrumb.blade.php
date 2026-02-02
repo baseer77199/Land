@@ -1,0 +1,107 @@
+
+    <ol class="breadcrumb breadcrumb-arrow">
+
+
+  </ol>
+
+<style>
+.breadcrumb-arrow {
+    height: 16px;
+    padding: 0;
+    line-height: 16px;
+    list-style: none;
+    background-color: #e6e9ed;
+    cursor:default !important;
+}
+.breadcrumb-arrow li:first-child a {
+    border-radius: 4px 0 0 4px;
+    -webkit-border-radius: 4px 0 0 4px;
+    -moz-border-radius: 4px 0 0 4px
+}
+.breadcrumb-arrow li, .breadcrumb-arrow li a, .breadcrumb-arrow li span {
+    display: inline-block;
+    vertical-align: top
+}
+.breadcrumb-arrow li:not(:first-child) {
+    margin-left: -5px
+}
+.breadcrumb-arrow li+li:before {
+    padding: 0;
+    content: ""
+}
+.breadcrumb-arrow li span {
+    padding: 0 10px
+}
+.breadcrumb-arrow li a, .breadcrumb-arrow li:not(:first-child) span {
+    height: 16px;
+    padding: 0 10px 0 25px;
+    line-height: 16px;
+    cursor:default !important;
+}
+.breadcrumb-arrow li:first-child a {
+    padding: 0 10px
+}
+.breadcrumb-arrow li a {
+    position: relative;
+    color: #fff;
+    text-decoration: none;
+    /*background-color: #3bafda;*/
+    background-color: #024d87;
+    /*border: 1px solid #3bafda;*/
+    border: 1px solid #024d87;
+	text-transform:capitalize;
+}
+.breadcrumb-arrow li:first-child a {
+    padding-left: 10px
+}
+.breadcrumb-arrow li a:after, .breadcrumb-arrow li a:before {
+    position: absolute;
+    top: -1px;
+    width: 0;
+    height: 0;
+    content: '';
+    border-top: 9px solid transparent;
+    border-bottom: 7px solid transparent;
+}
+.breadcrumb-arrow li a:before {
+    right: -10px;
+    z-index: 3;
+    border-left-color: rgba(0,0,0,0.15);
+    border-left-style: solid;
+    border-left-width: 11px
+}
+.breadcrumb-arrow li a:after {
+    right: -11px;
+    z-index: 2;
+    /*border-left: 11px solid #2494be;*/
+    border-left: 11px solid #fff;
+}
+/*.breadcrumb-arrow li a:focus, .breadcrumb-arrow li a:hover {
+    background-color: #4fc1e9;
+    border: 1px solid #4fc1e9
+}
+.breadcrumb-arrow li a:focus:before, .breadcrumb-arrow li a:hover:before {
+    border-left-color: #4fc1e9
+}*/
+.breadcrumb-arrow li a:active {
+   /* background-color: #2494be;
+    border: 1px solid #2494be*/
+}
+.breadcrumb-arrow li a:active:after, .breadcrumb-arrow li a:active:before {
+    border-left-color: #2494be
+}
+.breadcrumb-arrow li span {
+    color: #434a54
+}
+/*.breadcrumb-arrow li:last-child a:after{
+    border-left:0px;
+} */
+
+.breadcrumb-arrow li:last-child a:after, .breadcrumb-arrow li:last-child a:before{
+     border-top: none;
+    border-bottom:none;
+}
+
+
+
+</style>
